@@ -12,22 +12,22 @@ void CDuck::Quack() const
 	m_quackBehavior->Quack();
 }
 
-void CDuck::Swim()
+void CDuck::Swim() const
 {
 	std::cout << "I'm swimming" << std::endl;
 }
 
-void CDuck::Fly()
+void CDuck::Fly() const
 {
 	m_flyBehavior->Fly();
 }
 
-void CDuck::Dance()
+void CDuck::Dance() const
 {
 	m_danceBehavior->Dance();
 }
 
-void CDuck::ShowCountOfFly()
+void CDuck::ShowCountOfFly() const
 {
 	m_flyBehavior->ShowCountOfFly();
 }

@@ -14,6 +14,7 @@ void PlayWithDuck(CDuck& duck)
 {
 	DrawDuck(duck);
 	duck.Quack();
+	duck.Swim();
 	duck.Fly();
 	duck.Fly();
 	duck.Dance();

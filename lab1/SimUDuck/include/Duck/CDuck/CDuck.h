@@ -12,13 +12,13 @@ public:
 
 	void Quack() const;
 
-	void Swim();
+	void Swim() const;
 
-	void Fly();
+	void Fly() const;
 
-	void Dance();
+	void Dance() const;
 
-	void ShowCountOfFly();
+	void ShowCountOfFly() const;
 
 	void SetFlyBehavior(std::unique_ptr<IFlyBehavior>&& flyBehavior);
 
