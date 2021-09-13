@@ -15,7 +15,14 @@ void PlayWithDuck(CDuck& duck)
 	DrawDuck(duck);
 	duck.Quack();
 	duck.Fly();
+	duck.Fly();
 	duck.Dance();
+	std::cout << "Count of fly is: ";
+	duck.ShowCountOfFly();
+	duck.SetFlyBehavior(std::make_unique<CFlyWithWings>());
+	std::cout << "After changing fly behavior count of fly is: ";
+	duck.ShowCountOfFly();
+
 	std::cout << std::endl;
 }
 

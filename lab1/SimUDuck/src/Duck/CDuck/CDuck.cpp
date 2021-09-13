@@ -27,6 +27,11 @@ void CDuck::Dance()
 	m_danceBehavior->Dance();
 }
 
+void CDuck::ShowCountOfFly()
+{
+	m_flyBehavior->ShowCountOfFly();
+}
+
 void CDuck::SetFlyBehavior(std::unique_ptr<IFlyBehavior>&& flyBehavior)
 {
 	m_flyBehavior = move(flyBehavior);

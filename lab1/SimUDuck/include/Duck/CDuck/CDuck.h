@@ -18,6 +18,8 @@ public:
 
 	void Dance();
 
+	void ShowCountOfFly();
+
 	void SetFlyBehavior(std::unique_ptr<IFlyBehavior>&& flyBehavior);
 
 	void SetDanceBehavior(std::unique_ptr<IDanceBehavior>&& danceBehavior);
