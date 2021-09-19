@@ -5,7 +5,7 @@ template <typename T>
 class IObservable
 {
 public:
-	virtual void RegisterObserver(IObserver<T>& observer) = 0;
+	virtual void RegisterObserver(IObserver<T>& observer, int priority) = 0;
 
 	virtual void NotifyObservers() = 0;
 

@@ -1,6 +1,6 @@
 #pragma once
 #include "../IObservable/IObservable.h"
-#include <set>
+#include <map>
 
 template <typename T>
 class CObservable : public IObservable<T>
@@ -8,28 +8,37 @@ class CObservable : public IObservable<T>
 public:
 	typedef IObserver<T> ObserverType;
 
-	void RegisterObserver(ObserverType& observer) override
+	void RegisterObserver(ObserverType& observer, const int priority) override
 	{
-		m_observers.insert(&observer);
+		m_observers.emplace(priority, &observer);
 	}
 
 	void NotifyObservers() override
 	{
 		T data = GetChangedData();
-		for (auto& observer : m_observers)
+		std::multimap<int, ObserverType*> observers = m_observers;
+
+		for (auto it = observers.begin(); it != observers.end(); ++it)
 		{
-			observer->Update(data);
+			it->second->Update(data);
 		}
 	}
 
 	void RemoveObserver(ObserverType& observer) override
 	{
-		m_observers.erase(&observer);
+		for (auto it = m_observers.begin(); it != m_observers.end(); ++it)
+		{
+			if (it->second == &observer)
+			{
+				m_observers.erase(it);
+				break;
+			}
+		}
 	}
 
 protected:
 	virtual T GetChangedData() const = 0;
 
 private:
-	std::set<ObserverType*> m_observers;
+	std::multimap<int, ObserverType*> m_observers;
 };
