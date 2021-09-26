@@ -158,6 +158,81 @@ private:
 	unsigned m_mass;
 };
 
+class CCream : public CCondimentDecorator
+{
+public:
+	CCream(IBeveragePtr&& beverage)
+		: CCondimentDecorator(move(beverage))
+	{
+	}
+
+	double GetCondimentCost() const override
+	{
+		return 25;
+	}
+
+	std::string GetCondimentDescription() const override
+	{
+		return "Cream";
+	}
+};
+
+class CChocolate : public CCondimentDecorator
+{
+public:
+	CChocolate(IBeveragePtr&& beverage, const int countOfSlice)
+		: CCondimentDecorator(move(beverage))
+	{
+		m_countOfSlice = std::min(countOfSlice, M_MAX_COUNT_OF_SLICE);
+	}
+
+	double GetCondimentCost() const override
+	{
+		return 10 * m_countOfSlice;
+	}
+
+	std::string GetCondimentDescription() const override
+	{
+		return "Chocolate slice(" + std::to_string(m_countOfSlice) + ')';
+	}
+
+private:
+	const int M_MAX_COUNT_OF_SLICE = 5;
+
+	int m_countOfSlice;
+};
+
+enum class LiquorType
+{
+	Nut,
+	Chocolate
+};
+
+class CLiquor : public CCondimentDecorator
+{
+public:
+	CLiquor(IBeveragePtr&& beverage, const LiquorType& type)
+		: CCondimentDecorator(move(beverage))
+		, m_type(type)
+	{
+	}
+
+	double GetCondimentCost() const override
+	{
+		return 50;
+	}
+
+	std::string GetCondimentDescription() const override
+	{
+		const std::string condiment = m_type == LiquorType::Nut ? "nut" : "chocolate";
+
+		return "Liquor with " + condiment;
+	}
+
+private:
+	LiquorType m_type;
+};
+
 class CCoconutFlakes : public CCondimentDecorator
 {
 public:

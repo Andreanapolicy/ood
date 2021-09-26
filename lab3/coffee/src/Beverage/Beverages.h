@@ -63,7 +63,7 @@ public:
 	}
 
 private:
-	int m_cost;
+	double m_cost;
 };
 
 class CLatte : public CCoffee
@@ -91,7 +91,7 @@ public:
 	}
 
 private:
-	int m_cost;
+	double m_cost;
 };
 
 enum class TeaType
@@ -167,5 +167,5 @@ public:
 	}
 
 private:
-	int m_cost;
+	double m_cost;
 };

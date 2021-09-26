@@ -99,3 +99,38 @@ TEST_CASE("check milkshake cost")
 		REQUIRE(milkshake.GetCost() == 80);
 	}
 }
+
+TEST_CASE("check condiment on Latte")
+{
+	GIVEN("Double latte")
+	{
+		CLatte latte = CLatte(CoffeePortion::Double);
+
+		WHEN("add cream with nut liquor")
+		{
+			auto latte = std::make_unique<CLatte>(CoffeePortion::Double);
+			auto latteWithCream = std::make_unique<CCream>(std::move(latte));
+			auto latteWithCreamAndWithNutLiquor = std::make_unique<CLiquor>(std::move(latteWithCream), LiquorType::Nut);
+
+			REQUIRE(latteWithCreamAndWithNutLiquor->GetDescription() == "Double Latte, Cream, Liquor with nut");
+			REQUIRE(latteWithCreamAndWithNutLiquor->GetCost() == 205);
+		}
+	}
+
+	GIVEN("Standard latte")
+	{
+		CLatte latte = CLatte(CoffeePortion::Double);
+
+		WHEN("add 10 slice of chocolate")
+		{
+			auto latte = std::make_unique<CLatte>(CoffeePortion::Standard);
+			auto latteWithChocolate = std::make_unique<CChocolate>(std::move(latte), 10);
+
+			THEN("where are only 5 slice of chocolate")
+			{
+				REQUIRE(latteWithChocolate->GetDescription() == "Standard Latte, Chocolate slice(5)");
+				REQUIRE(latteWithChocolate->GetCost() == 140);
+			}
+		}
+	}
+}
