@@ -1,5 +1,6 @@
 #pragma once
 #include "IBeverage.h"
+#include <map>
 
 class CBeverage : public IBeverage
 {
@@ -9,12 +10,12 @@ public:
 	{
 	}
 
-	std::string GetDescription() const override final
+	std::string GetDescription() const override
 	{
 		return m_description;
 	}
 
-protected:
+private:
 	std::string m_description;
 };
 
@@ -47,11 +48,11 @@ public:
 		switch (cappuccinoPortion)
 		{
 		case CoffeePortion::Standard:
-			m_description = "Standard Cappuccino";
+			m_description = "Standard";
 			m_cost = 80;
 			break;
 		case CoffeePortion::Double:
-			m_description = "Double Cappuccino";
+			m_description = "Double";
 			m_cost = 120;
 			break;
 		}
@@ -62,7 +63,14 @@ public:
 		return m_cost;
 	}
 
+	std::string GetDescription() const override
+	{
+		return m_description + ' ' + CBeverage::GetDescription();
+	}
+
 private:
+	std::string m_description;
+
 	double m_cost;
 };
 
@@ -75,12 +83,12 @@ public:
 		switch (lattePortion)
 		{
 		case CoffeePortion::Standard:
-			m_description = "Standard Latte";
 			m_cost = 90;
+			m_description = "Standard";
 			break;
 		case CoffeePortion::Double:
-			m_description = "Double Latte";
 			m_cost = 130;
+			m_description = "Double";
 			break;
 		}
 	}
@@ -90,7 +98,14 @@ public:
 		return m_cost;
 	}
 
+	std::string GetDescription() const override
+	{
+		return m_description + ' ' + CBeverage::GetDescription();
+	}
+
 private:
+	std::string m_description;
+
 	double m_cost;
 };
 
@@ -111,16 +126,16 @@ public:
 		switch (teaType)
 		{
 		case TeaType::White:
-			m_description = "White Tea";
+			m_description = "White";
 			break;
 		case TeaType::Black:
-			m_description = "Black Tea";
+			m_description = "Black";
 			break;
 		case TeaType::Green:
-			m_description = "Green Tea";
+			m_description = "Green";
 			break;
 		case TeaType::Yellow:
-			m_description = "Yellow Tea";
+			m_description = "Yellow";
 			break;
 		}
 	}
@@ -129,6 +144,14 @@ public:
 	{
 		return 30;
 	}
+
+	std::string GetDescription() const override
+	{
+		return m_description + ' ' + CBeverage::GetDescription();
+	}
+
+private:
+	std::string m_description;
 };
 
 enum class MilkshakePortion
@@ -147,18 +170,23 @@ public:
 		switch (milkshakePortion)
 		{
 		case MilkshakePortion::Small:
-			m_description = "Small Milkshake";
+			m_description = "Small";
 			m_cost = 50;
 			break;
 		case MilkshakePortion::Medium:
-			m_description = "Medium Milkshake";
+			m_description = "Medium";
 			m_cost = 60;
 			break;
 		case MilkshakePortion::Big:
-			m_description = "Big Milkshake";
+			m_description = "Big";
 			m_cost = 80;
 			break;
 		}
+	}
+
+	std::string GetDescription() const override
+	{
+		return m_description + ' ' + CBeverage::GetDescription();
 	}
 
 	double GetCost() const override
@@ -167,5 +195,7 @@ public:
 	}
 
 private:
+	std::string m_description;
+
 	double m_cost;
 };

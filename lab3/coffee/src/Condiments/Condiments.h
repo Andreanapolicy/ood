@@ -197,7 +197,7 @@ public:
 	}
 
 private:
-	const int M_MAX_COUNT_OF_SLICE = 5;
+	static inline int M_MAX_COUNT_OF_SLICE = 5;
 
 	int m_countOfSlice;
 };
