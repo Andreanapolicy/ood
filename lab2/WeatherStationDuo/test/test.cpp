@@ -1,7 +1,6 @@
 #define CATCH_CONFIG_MAIN
 #include "../../../catch2/catch.hpp"
 #include "../src/WeatherData/WeatherData.h"
-#include "../src/Observer/Observer.h"
 
 TEST_CASE("Observer two observable")
 {
