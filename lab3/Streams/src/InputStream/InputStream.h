@@ -1,7 +1,9 @@
 #pragma once
+#include <cstdint>
+#include <fstream>
 #include <iomanip>
 #include <string>
-#include <cstdint>
+#include <vector>
 
 class IInputStream
 {
@@ -96,7 +98,7 @@ public:
 		}
 
 		auto buffer = static_cast<uint8_t*>(dstData);
-		for (auto index = 0; index < dataSize; index ++)
+		for (auto index = 0; index < dataSize; index++)
 		{
 			*buffer = m_stream[m_pos];
 			++m_pos;
