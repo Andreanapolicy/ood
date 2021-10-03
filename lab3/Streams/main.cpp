@@ -3,33 +3,100 @@
 #include "src/OutputStream/OutputStream.h"
 #include "src/OutputStream/OutputStreamDecorator.h"
 #include <iostream>
+#include <map>
 
-int main()
+std::map<std::string, int> mapOfOption = {
+	{ "--encrypt", 1 },
+	{ "--decrypt", 2 },
+	{ "--compress", 3 },
+	{ "--decompress", 4 }
+};
+
+std::string ERROR_MESSAGE = "Error. Calling this program should be like:\n ./Streams <options> <input file> <output file>";
+
+bool ChooseOptions(IInputStreamPtr& inputStream, IOutputStreamPtr& outputStream, int argc, char* argv[])
 {
-	std::string FILE_NAME = "file.txt";
+	int indexOfOptions = 1;
+	while (argc - 2 > indexOfOptions)
+	{
+		std::string option = argv[indexOfOptions];
+		if (mapOfOption.find(option) == mapOfOption.end())
+		{
+			std::cout << ERROR_MESSAGE << std::endl;
 
-	auto stream = std::make_unique<CFileOutputStream>(FILE_NAME);
-	auto compressedStream = CCompressedOutputStream(std::move(stream));
+			return false;
+		}
 
-	compressedStream.WriteByte('1');
-	compressedStream.WriteByte('C');
-	compressedStream.WriteByte('C');
-	compressedStream.WriteByte('A');
-	compressedStream.WriteByte('A');
-	compressedStream.WriteByte('A');
-	compressedStream.WriteByte('\n');
-	compressedStream.WriteByte('A');
+		std::cout << mapOfOption[option] << std::endl;
 
-	auto inStream = std::make_unique<CFileInputStream>(FILE_NAME);
-	auto decompressedStream = CDecompressedInputStream(std::move(inStream));
+		switch (mapOfOption[option])
+		{
+		case 1: {
+			indexOfOptions++;
+			auto key = atoi(argv[indexOfOptions]);
+			outputStream = std::make_unique<CEncryptedOutputStream>(std::move(outputStream), key);
+			break;
+		}
+		case 2: {
+			indexOfOptions++;
+			auto key = atoi(argv[indexOfOptions]);
+			inputStream = std::make_unique<CDecryptedInputStream>(std::move(inputStream), key);
+			break;
+		}
+		case 3: {
+			outputStream = std::make_unique<CCompressedOutputStream>(std::move(outputStream));
+			break;
+		}
+		case 4: {
+			inputStream = std::make_unique<CDecompressedInputStream>(std::move(inputStream));
+			break;
+		}
+		default: {
+			std::cout << ERROR_MESSAGE << std::endl;
 
-	std::cout << decompressedStream.ReadByte() << std::endl;
-	std::cout << decompressedStream.ReadByte() << std::endl;
-	std::cout << decompressedStream.ReadByte() << std::endl;
-	std::cout << decompressedStream.ReadByte() << std::endl;
-	std::cout << decompressedStream.ReadByte() << std::endl;
-	std::cout << decompressedStream.ReadByte() << std::endl;
-	std::cout << decompressedStream.ReadByte() << std::endl;
-//	std::cout << decompressedStream.ReadByte() << std::endl;
+			return false;
+		}
+		}
+
+		indexOfOptions++;
+	}
+
+	return true;
+}
+
+void CopyFile(IInputStreamPtr& inputStream, IOutputStreamPtr& outputStream)
+{
+	std::cout << "CopyFile" << std::endl;
+	while (!inputStream->IsEOF())
+	{
+		try
+		{
+			outputStream->WriteByte(inputStream->ReadByte());
+		}
+		catch (const std::exception& exception)
+		{
+		}
+	}
+}
+
+int main(int argc, char* argv[])
+{
+	if (argc < 3)
+	{
+		std::cout << ERROR_MESSAGE << std::endl;
+
+		return 1;
+	}
+
+	IInputStreamPtr inputStream = std::make_unique<CFileInputStream>(argv[argc - 2]);
+	IOutputStreamPtr outputStream = std::make_unique<CFileOutputStream>(argv[argc - 1]);
+
+	if (!ChooseOptions(inputStream, outputStream, argc, argv))
+	{
+		return 1;
+	}
+
+	CopyFile(inputStream, outputStream);
+
 	return 0;
 }
