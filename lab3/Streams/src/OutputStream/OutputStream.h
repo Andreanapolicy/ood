@@ -4,6 +4,7 @@
 #include <iomanip>
 #include <string>
 #include <vector>
+#include <iostream>
 
 class IOutputStream
 {
@@ -14,6 +15,8 @@ public:
 
 	virtual ~IOutputStream() = default;
 };
+
+typedef std::unique_ptr<IOutputStream> IOutputStreamPtr;
 
 class CFileOutputStream : public IOutputStream
 {
@@ -35,7 +38,7 @@ public:
 	void WriteBlock(const void* srcData, std::streamsize size) override
 	{
 		m_stream.write(static_cast<const char*>(srcData), size);
-		if (m_stream.bad())
+		if (m_stream.fail() || m_stream.bad())
 		{
 			throw std::ios_base::failure("Error. Can not write to file");
 		}

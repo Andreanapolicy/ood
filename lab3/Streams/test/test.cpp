@@ -1,7 +1,9 @@
 #define CATCH_CONFIG_MAIN
 #include "../../../catch2/catch.hpp"
 #include "../src/InputStream/InputStream.h"
+#include "../src/InputStream/InputStreamDecorator.h"
 #include "../src/OutputStream/OutputStream.h"
+#include "../src/OutputStream/OutputStreamDecorator.h"
 
 std::string GetDataFromFile(std::string const& fileName)
 {
@@ -233,5 +235,240 @@ TEST_CASE("check output memory stream")
 				}
 			}
 		}
+	}
+}
+
+TEST_CASE("check compression and decompression on memory stream")
+{
+	SECTION("writing by one byte")
+	{
+		std::vector<uint8_t> memory;
+
+		{
+			auto stream = std::make_unique<CMemoryOutputStream>(memory);
+			auto compressedStream = CCompressedOutputStream(std::move(stream));
+
+			compressedStream.WriteByte('1');
+			compressedStream.WriteByte('C');
+			compressedStream.WriteByte('C');
+			compressedStream.WriteByte('A');
+			compressedStream.WriteByte('A');
+			compressedStream.WriteByte('A');
+			compressedStream.WriteByte('\n');
+		}
+
+		{
+			auto inStream = std::make_unique<CMemoryInputStream>(memory);
+			auto decompressedStream = CDecompressedInputStream(std::move(inStream));
+
+			REQUIRE(decompressedStream.ReadByte() == '1');
+			REQUIRE(decompressedStream.ReadByte() == 'C');
+			REQUIRE(decompressedStream.ReadByte() == 'C');
+			REQUIRE(decompressedStream.ReadByte() == 'A');
+			REQUIRE(decompressedStream.ReadByte() == 'A');
+			REQUIRE(decompressedStream.ReadByte() == 'A');
+		}
+	}
+
+	SECTION("writing by block")
+	{
+		std::vector<uint8_t> memory;
+		char infoBefore[7] = {'1', 'C', 'C', 'A', 'A', 'A', '\n'};
+
+		{
+			auto stream = std::make_unique<CMemoryOutputStream>(memory);
+			auto compressedStream = CCompressedOutputStream(std::move(stream));
+
+			compressedStream.WriteBlock(infoBefore, 6);
+		}
+
+		auto inStream = std::make_unique<CMemoryInputStream>(memory);
+		auto decompressedStream = CDecompressedInputStream(std::move(inStream));
+		char infoAfter[6];
+
+		REQUIRE(decompressedStream.ReadBlock(infoAfter, 6) == 6);
+		REQUIRE(infoAfter[0] == infoBefore[0]);
+		REQUIRE(infoAfter[1] == infoBefore[1]);
+		REQUIRE(infoAfter[2] == infoBefore[2]);
+		REQUIRE(infoAfter[3] == infoBefore[3]);
+		REQUIRE(infoAfter[4] == infoBefore[4]);
+		REQUIRE(infoAfter[5] == infoBefore[5]);
+	}
+}
+
+TEST_CASE("check compression and decompression on file stream")
+{
+	std::string FILE_NAME = "file.txt";
+
+	SECTION("writing by one byte")
+	{
+		{
+			auto stream = std::make_unique<CFileOutputStream>(FILE_NAME);
+			auto compressedStream = CCompressedOutputStream(std::move(stream));
+
+			compressedStream.WriteByte('1');
+			compressedStream.WriteByte('C');
+			compressedStream.WriteByte('C');
+			compressedStream.WriteByte('A');
+			compressedStream.WriteByte('A');
+			compressedStream.WriteByte('A');
+			compressedStream.WriteByte('\n');
+			compressedStream.WriteByte('A');
+		}
+		{
+			auto inStream = std::make_unique<CFileInputStream>(FILE_NAME);
+			auto decompressedStream = CDecompressedInputStream(std::move(inStream));
+
+			REQUIRE(decompressedStream.ReadByte() == '1');
+			REQUIRE(decompressedStream.ReadByte() == 'C');
+			REQUIRE(decompressedStream.ReadByte() == 'C');
+			REQUIRE(decompressedStream.ReadByte() == 'A');
+			REQUIRE(decompressedStream.ReadByte() == 'A');
+			REQUIRE(decompressedStream.ReadByte() == 'A');
+			REQUIRE(decompressedStream.ReadByte() == '\n');
+			REQUIRE(decompressedStream.ReadByte() == 'A');
+		}
+	}
+
+	SECTION("writing by block")
+	{
+		char infoBefore[7] = {'1', 'C', 'C', 'A', 'A', 'A', '\n'};
+
+		{
+			auto stream = std::make_unique<CFileOutputStream>(FILE_NAME);
+			auto compressedStream = CCompressedOutputStream(std::move(stream));
+
+			compressedStream.WriteBlock(infoBefore, 6);
+		}
+
+		auto inStream = std::make_unique<CFileInputStream>(FILE_NAME);
+		auto decompressedStream = CDecompressedInputStream(std::move(inStream));
+		char infoAfter[6];
+
+		REQUIRE(decompressedStream.ReadBlock(infoAfter, 6) == 6);
+		REQUIRE(infoAfter[0] == infoBefore[0]);
+		REQUIRE(infoAfter[1] == infoBefore[1]);
+		REQUIRE(infoAfter[2] == infoBefore[2]);
+		REQUIRE(infoAfter[3] == infoBefore[3]);
+		REQUIRE(infoAfter[4] == infoBefore[4]);
+		REQUIRE(infoAfter[5] == infoBefore[5]);
+	}
+}
+
+TEST_CASE("check crypt and decrypt on file stream")
+{
+	std::string FILE_NAME = "file.txt";
+
+	SECTION("writing by one byte")
+	{
+		{
+			auto stream = std::make_unique<CFileOutputStream>(FILE_NAME);
+			auto encryptedStream = CEncryptedOutputStream(std::move(stream), 12);
+
+			encryptedStream.WriteByte('1');
+			encryptedStream.WriteByte('C');
+			encryptedStream.WriteByte('C');
+			encryptedStream.WriteByte('A');
+			encryptedStream.WriteByte('A');
+			encryptedStream.WriteByte('A');
+			encryptedStream.WriteByte('\n');
+			encryptedStream.WriteByte('A');
+		}
+		{
+			auto inStream = std::make_unique<CFileInputStream>(FILE_NAME);
+			auto decryptedStream = CDecryptedInputStream(std::move(inStream), 12);
+
+			REQUIRE(decryptedStream.ReadByte() == '1');
+			REQUIRE(decryptedStream.ReadByte() == 'C');
+			REQUIRE(decryptedStream.ReadByte() == 'C');
+			REQUIRE(decryptedStream.ReadByte() == 'A');
+			REQUIRE(decryptedStream.ReadByte() == 'A');
+			REQUIRE(decryptedStream.ReadByte() == 'A');
+			REQUIRE(decryptedStream.ReadByte() == '\n');
+			REQUIRE(decryptedStream.ReadByte() == 'A');
+		}
+	}
+
+	SECTION("writing by block")
+	{
+		char infoBefore[7] = {'1', 'C', 'C', 'A', 'A', 'A', '\n'};
+
+		{
+			auto stream = std::make_unique<CFileOutputStream>(FILE_NAME);
+			auto compressedStream = CEncryptedOutputStream(std::move(stream), 12);
+
+			compressedStream.WriteBlock(infoBefore, 6);
+		}
+
+		auto inStream = std::make_unique<CFileInputStream>(FILE_NAME);
+		auto decompressedStream = CDecryptedInputStream(std::move(inStream), 12);
+		char infoAfter[6];
+
+		REQUIRE(decompressedStream.ReadBlock(infoAfter, 6) == 6);
+		REQUIRE(infoAfter[0] == infoBefore[0]);
+		REQUIRE(infoAfter[1] == infoBefore[1]);
+		REQUIRE(infoAfter[2] == infoBefore[2]);
+		REQUIRE(infoAfter[3] == infoBefore[3]);
+		REQUIRE(infoAfter[4] == infoBefore[4]);
+		REQUIRE(infoAfter[5] == infoBefore[5]);
+	}
+}
+
+TEST_CASE("check crypt and decrypt on memory stream")
+{
+	SECTION("writing by one byte")
+	{
+		std::vector<uint8_t> memory;
+		{
+			auto stream = std::make_unique<CMemoryOutputStream>(memory);
+			auto encryptedStream = CEncryptedOutputStream(std::move(stream), 12);
+
+			encryptedStream.WriteByte('1');
+			encryptedStream.WriteByte('C');
+			encryptedStream.WriteByte('C');
+			encryptedStream.WriteByte('A');
+			encryptedStream.WriteByte('A');
+			encryptedStream.WriteByte('A');
+			encryptedStream.WriteByte('\n');
+			encryptedStream.WriteByte('A');
+		}
+		{
+			auto inStream = std::make_unique<CMemoryInputStream>(memory);
+			auto decryptedStream = CDecryptedInputStream(std::move(inStream), 12);
+
+			REQUIRE(decryptedStream.ReadByte() == '1');
+			REQUIRE(decryptedStream.ReadByte() == 'C');
+			REQUIRE(decryptedStream.ReadByte() == 'C');
+			REQUIRE(decryptedStream.ReadByte() == 'A');
+			REQUIRE(decryptedStream.ReadByte() == 'A');
+			REQUIRE(decryptedStream.ReadByte() == 'A');
+			REQUIRE(decryptedStream.ReadByte() == '\n');
+			REQUIRE(decryptedStream.ReadByte() == 'A');
+		}
+	}
+
+	SECTION("writing by block")
+	{
+		char infoBefore[7] = {'1', 'C', 'C', 'A', 'A', 'A', '\n'};
+		std::vector<uint8_t> memory;
+
+		{
+			auto stream = std::make_unique<CMemoryOutputStream>(memory);
+			auto compressedStream = CEncryptedOutputStream(std::move(stream), 12);
+
+			compressedStream.WriteBlock(infoBefore, 6);
+		}
+
+		auto inStream = std::make_unique<CMemoryInputStream>(memory);
+		auto decompressedStream = CDecryptedInputStream(std::move(inStream), 12);
+		char infoAfter[6];
+
+		REQUIRE(decompressedStream.ReadBlock(infoAfter, 6) == 6);
+		REQUIRE(infoAfter[0] == infoBefore[0]);
+		REQUIRE(infoAfter[1] == infoBefore[1]);
+		REQUIRE(infoAfter[2] == infoBefore[2]);
+		REQUIRE(infoAfter[3] == infoBefore[3]);
+		REQUIRE(infoAfter[4] == infoBefore[4]);
+		REQUIRE(infoAfter[5] == infoBefore[5]);
 	}
 }

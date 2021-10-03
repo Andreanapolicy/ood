@@ -4,6 +4,7 @@
 #include <iomanip>
 #include <string>
 #include <vector>
+#include <iostream>
 
 class IInputStream
 {
@@ -16,6 +17,8 @@ public:
 
 	virtual ~IInputStream() = default;
 };
+
+typedef std::unique_ptr<IInputStream> IInputStreamPtr;
 
 class CFileInputStream : public IInputStream
 {
@@ -92,13 +95,13 @@ public:
 
 	std::streamsize ReadBlock(void* dstData, std::streamsize dataSize) override
 	{
-		if (dataSize + m_pos > m_stream.size())
+		if (dataSize > m_stream.size() - m_pos )
 		{
 			dataSize = m_stream.size() - m_pos;
 		}
 
 		auto buffer = static_cast<uint8_t*>(dstData);
-		for (auto index = 0; index < dataSize; index++)
+		for (std::streamsize index = 0; index < dataSize; index++)
 		{
 			*buffer = m_stream[m_pos];
 			++m_pos;
@@ -109,7 +112,7 @@ public:
 	}
 
 private:
-	std::vector<uint8_t> m_stream;
+	std::vector<uint8_t>& m_stream;
 
 	size_t m_pos = 0;
 };
