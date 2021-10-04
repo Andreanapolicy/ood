@@ -5,11 +5,18 @@
 #include <iostream>
 #include <map>
 
-std::map<std::string, int> mapOfOption = {
-	{ "--encrypt", 1 },
-	{ "--decrypt", 2 },
-	{ "--compress", 3 },
-	{ "--decompress", 4 }
+enum class OptionType
+{
+	COMPRESSION,
+	DECOMPRESSION,
+	ENCRYPTION,
+	DECRYPTION,
+};
+std::map<std::string, OptionType> mapOfOption = {
+	{ "--encrypt", OptionType::ENCRYPTION },
+	{ "--decrypt", OptionType::DECRYPTION },
+	{ "--compress", OptionType::COMPRESSION },
+	{ "--decompress", OptionType::DECOMPRESSION }
 };
 
 std::string ERROR_MESSAGE = "Error. Calling this program should be like:\n ./Streams <options> <input file> <output file>";
@@ -27,27 +34,25 @@ bool ChooseOptions(IInputStreamPtr& inputStream, IOutputStreamPtr& outputStream,
 			return false;
 		}
 
-		std::cout << mapOfOption[option] << std::endl;
-
 		switch (mapOfOption[option])
 		{
-		case 1: {
+		case OptionType::ENCRYPTION: {
 			indexOfOptions++;
 			auto key = atoi(argv[indexOfOptions]);
 			outputStream = std::make_unique<CEncryptedOutputStream>(std::move(outputStream), key);
 			break;
 		}
-		case 2: {
+		case OptionType::DECRYPTION: {
 			indexOfOptions++;
 			auto key = atoi(argv[indexOfOptions]);
 			inputStream = std::make_unique<CDecryptedInputStream>(std::move(inputStream), key);
 			break;
 		}
-		case 3: {
+		case OptionType::COMPRESSION: {
 			outputStream = std::make_unique<CCompressedOutputStream>(std::move(outputStream));
 			break;
 		}
-		case 4: {
+		case OptionType::DECOMPRESSION: {
 			inputStream = std::make_unique<CDecompressedInputStream>(std::move(inputStream));
 			break;
 		}
@@ -66,7 +71,6 @@ bool ChooseOptions(IInputStreamPtr& inputStream, IOutputStreamPtr& outputStream,
 
 void CopyFile(IInputStreamPtr& inputStream, IOutputStreamPtr& outputStream)
 {
-	std::cout << "CopyFile" << std::endl;
 	while (!inputStream->IsEOF())
 	{
 		try
