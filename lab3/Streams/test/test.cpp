@@ -36,7 +36,7 @@ TEST_CASE("check input file stream")
 
 		GIVEN("creating file with existing file name")
 		{
-			THEN("there is no throws")
+			THEN("there are no throws")
 			{
 				REQUIRE_NOTHROW(CFileInputStream(TEXT_FILE));
 			}
@@ -81,6 +81,20 @@ TEST_CASE("check input file stream")
 			{
 				char buffer[4];
 				REQUIRE(ifstream.ReadBlock(buffer, 4) == 4);
+
+				THEN("in buffer: 1V#c")
+				{
+					REQUIRE(buffer[0] == '1');
+					REQUIRE(buffer[1] == 'V');
+					REQUIRE(buffer[2] == '#');
+					REQUIRE(buffer[3] == 'c');
+				}
+			}
+
+			WHEN("reading to buffer with size, greater then real size")
+			{
+				char buffer[7];
+				REQUIRE(ifstream.ReadBlock(buffer, 10) == 7);
 
 				THEN("in buffer: 1V#c")
 				{
@@ -363,7 +377,7 @@ TEST_CASE("check crypt and decrypt on file stream")
 	{
 		{
 			auto stream = std::make_unique<CFileOutputStream>(FILE_NAME);
-			auto encryptedStream = CEncryptedOutputStream(std::move(stream), 12);
+			auto encryptedStream = CEncryptedOutputStream(std::move(stream), 12); // remove {}
 
 			encryptedStream.WriteByte('1');
 			encryptedStream.WriteByte('C');

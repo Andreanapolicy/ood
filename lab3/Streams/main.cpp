@@ -12,6 +12,7 @@ enum class OptionType
 	ENCRYPTION,
 	DECRYPTION,
 };
+
 std::map<std::string, OptionType> mapOfOption = {
 	{ "--encrypt", OptionType::ENCRYPTION },
 	{ "--decrypt", OptionType::DECRYPTION },

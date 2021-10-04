@@ -24,7 +24,7 @@ public:
 
 	~CCompressedOutputStream()
 	{
-		WriteSeries();
+		Flush();
 	}
 
 	void WriteByte(uint8_t data) override
@@ -43,7 +43,7 @@ public:
 			return;
 		}
 
-		WriteSeries();
+		Flush();
 		m_series = {1, data};
 
 	}
@@ -61,7 +61,7 @@ public:
 
 private:
 
-	void WriteSeries()
+	void Flush()
 	{
 		m_stream->WriteByte(m_series.size);
 		m_stream->WriteByte(m_series.byte);
