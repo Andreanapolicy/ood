@@ -27,7 +27,7 @@ public:
 		this->m_cosSum = this->m_cosSum + std::cos(this->ToRadians(data));
 
 		auto x = ToDegrees(std::atan2(m_sinSum, m_cosSum)) + 360;
-		this->m_average = x - std::trunc(x / 360) * 360;
+        this->m_average = std::fmod(x, 360);
 	}
 
 	std::string ToString() const
