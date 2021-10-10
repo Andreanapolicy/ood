@@ -1,5 +1,6 @@
 #pragma once
 #include "../Color/Color.h"
+#include "../Canvas/ICanvas.h"
 
 class CShape
 {

@@ -4,6 +4,7 @@
 #include "../src/Shape/CRectangle.h"
 #include "../src/Shape/CEllipse.h"
 #include "../src/Shape/CRegularPolygon.h"
+#include "../src/PictureDraft/CPictureDraft.h"
 
 TEST_CASE("Test triangle functional")
 {
@@ -79,5 +80,47 @@ TEST_CASE("Test regular polygon functional")
 		REQUIRE(regularPolygon.GetRadius() == radius);
 		REQUIRE(regularPolygon.GetVertexCount() == count);
 		REQUIRE(regularPolygon.GetColor() == Color::Yellow);
+	}
+}
+
+TEST_CASE("check picture draft")
+{
+	SECTION("standard settings")
+	{
+		CPictureDraft pictureDraft;
+		REQUIRE(pictureDraft.GetShapesCount() == 0);
+		REQUIRE_THROWS(pictureDraft.GetShape(0));
+	}
+
+	SECTION("creating picture draft with shapes")
+	{
+		CPictureDraft pictureDraft;
+
+		CRegularPolygon regularPolygon(Color::Yellow, 4, { 12, 12 }, 12);
+		auto regularPolygonPtr = std::make_unique<CRegularPolygon>(regularPolygon);
+
+		CRectangle rectangle(Color::Yellow, { 12, 12 }, 4, 12);
+		auto rectanglePtr = std::make_unique<CRectangle>(rectangle);
+
+		WHEN("Adding regular polygon")
+		{
+			REQUIRE_NOTHROW(pictureDraft.AddShape(std::move(regularPolygonPtr)));
+			REQUIRE_NOTHROW(pictureDraft.AddShape(std::move(rectanglePtr)));
+
+			THEN("picture has 2 items")
+			{
+				REQUIRE(pictureDraft.GetShapesCount() == 2);
+			}
+
+			THEN("picture draft has regular polygon")
+			{
+				auto shape = dynamic_cast<CRegularPolygon&>(pictureDraft.GetShape(0));
+
+				REQUIRE(shape.GetVertexCount() == 4);
+				REQUIRE(shape.GetColor() == Color::Yellow);
+				REQUIRE(shape.GetRadius() == 12);
+				REQUIRE(shape.GetCenterPoint() == CPoint{12, 12});
+			}
+		}
 	}
 }

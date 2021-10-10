@@ -11,5 +11,5 @@ public:
 
 	virtual void DrawEllipse(const CPoint& centerPoint, const int widthRadius, const int heightRadius) = 0;
 
-	virtual ~ICanvas() = 0;
+	virtual ~ICanvas() = default;
 };
