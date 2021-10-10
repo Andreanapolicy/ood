@@ -5,6 +5,8 @@
 #include "../src/Shape/CEllipse.h"
 #include "../src/Shape/CRegularPolygon.h"
 #include "../src/PictureDraft/CPictureDraft.h"
+#include "../src/Canvas/TestCanvas.h"
+#include "../src/Painter/CPainter.h"
 
 TEST_CASE("Test triangle functional")
 {
@@ -121,6 +123,72 @@ TEST_CASE("check picture draft")
 				REQUIRE(shape.GetRadius() == 12);
 				REQUIRE(shape.GetCenterPoint() == CPoint{12, 12});
 			}
+		}
+	}
+}
+
+TEST_CASE("check test canvas")
+{
+	TestCanvas testCanvas;
+	CPictureDraft pictureDraft;
+
+	WHEN("add regular polygon and draw")
+	{
+		CRegularPolygon regularPolygon(Color::Yellow, 4, { 12, 12 }, 12);
+		auto regularPolygonPtr = std::make_unique<CRegularPolygon>(regularPolygon);
+		pictureDraft.AddShape(std::move(regularPolygonPtr));
+
+		CPainter::DrawPicture(pictureDraft, testCanvas);
+
+		THEN("in canvas will be regular polygon for drawing")
+		{
+			REQUIRE(testCanvas.GetResult() == std::vector<std::string>{"set color", "draw line", "draw line", "draw line", "draw line"});
+		}
+	}
+
+	WHEN("add rectangle and draw")
+	{
+		CRectangle rectangle(Color::Yellow, { 12, 12 }, 12, 12);
+		auto rectanglePtr = std::make_unique<CRectangle>(rectangle);
+		pictureDraft.AddShape(std::move(rectanglePtr));
+
+		CPainter::DrawPicture(pictureDraft, testCanvas);
+
+		THEN("in canvas will be rectangle for drawing")
+		{
+			REQUIRE(testCanvas.GetResult() == std::vector<std::string>{"set color", "draw line", "draw line", "draw line", "draw line"});
+		}
+	}
+
+	WHEN("add ellipse and draw")
+	{
+		CEllipse ellipse(Color::Yellow, { 12, 12 }, 5, 12);
+		auto ellipsePtr = std::make_unique<CEllipse>(ellipse);
+		pictureDraft.AddShape(std::move(ellipsePtr));
+
+		CPainter::DrawPicture(pictureDraft, testCanvas);
+
+		THEN("in canvas will be ellipse commands for drawing")
+		{
+			REQUIRE(testCanvas.GetResult() == std::vector<std::string>{"set color", "draw ellipse"});
+		}
+	}
+
+	WHEN("add ellipse, regular polygon and draw")
+	{
+		CEllipse ellipse(Color::Yellow, { 12, 12 }, 5, 12);
+		auto ellipsePtr = std::make_unique<CEllipse>(ellipse);
+		pictureDraft.AddShape(std::move(ellipsePtr));
+
+		CRegularPolygon regularPolygon(Color::Yellow, 4, { 12, 12 }, 12);
+		auto regularPolygonPtr = std::make_unique<CRegularPolygon>(regularPolygon);
+		pictureDraft.AddShape(std::move(regularPolygonPtr));
+
+		CPainter::DrawPicture(pictureDraft, testCanvas);
+
+		THEN("in canvas will be ellipse commands for drawing")
+		{
+			REQUIRE(testCanvas.GetResult() == std::vector<std::string>{"set color", "draw ellipse", "set color", "draw line", "draw line", "draw line", "draw line"});
 		}
 	}
 }

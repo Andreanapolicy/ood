@@ -30,7 +30,6 @@ public:
 					<< "regular_polygon <color> <vertex count> <center point x> <center point y> <radius>" << std::endl;
 				continue;
 			}
-
 			try
 			{
 				pictureDraft.AddShape(m_factory.CreateShape(command));

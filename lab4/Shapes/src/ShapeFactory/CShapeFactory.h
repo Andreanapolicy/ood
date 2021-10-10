@@ -92,8 +92,6 @@ private:
 
 	std::unique_ptr<CShape> CreateEllipse(const std::vector<std::string>& args)
 	{
-		std::cout << args.size() << std::endl;
-
 		if (args.size() != 6)
 		{
 			throw InvalidParamsCountException("Error, wrong params count for ellipse");
