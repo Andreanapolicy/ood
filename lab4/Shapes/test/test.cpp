@@ -7,6 +7,8 @@
 #include "../src/PictureDraft/CPictureDraft.h"
 #include "../src/Canvas/TestCanvas.h"
 #include "../src/Painter/CPainter.h"
+#include "../src/ShapeFactory/CShapeFactory.h"
+#include "../src/Designer/CDesigner.h"
 
 TEST_CASE("Test triangle functional")
 {
@@ -190,5 +192,84 @@ TEST_CASE("check test canvas")
 		{
 			REQUIRE(testCanvas.GetResult() == std::vector<std::string>{"set color", "draw ellipse", "set color", "draw line", "draw line", "draw line", "draw line"});
 		}
+	}
+}
+
+TEST_CASE("test designer")
+{
+	CShapeFactory shapeFactory;
+	CDesigner designer(shapeFactory);
+
+	std::stringstream ss;
+	ss << "rectangle red 5 4 2 1" << std::endl << "ellipse pink 50 50 20 20";
+
+	CPictureDraft pictureDraft = designer.CreateDraft(ss);
+
+	REQUIRE(pictureDraft.GetShapesCount() == 2);
+	auto testEllipse = dynamic_cast<CEllipse&>(pictureDraft.GetShape(1));
+
+	REQUIRE(testEllipse.GetColor() == Color::Pink);
+	REQUIRE(testEllipse.GetCenterPoint() == CPoint{50, 50});
+	REQUIRE(testEllipse.GetHeightRadius() == 20);
+	REQUIRE(testEllipse.GetWidthRadius() == 20);
+}
+
+TEST_CASE("test factory functionality")
+{
+	CShapeFactory shapeFactory;
+
+	SECTION("check throwing exceptions")
+	{
+		REQUIRE_THROWS(shapeFactory.CreateShape(""));
+		REQUIRE_THROWS(shapeFactory.CreateShape("triangke"));
+		REQUIRE_THROWS(shapeFactory.CreateShape("triangle 10 20 15 00 30 40"));
+	}
+
+	SECTION("create ellipse")
+	{
+		auto shape = shapeFactory.CreateShape("ellipse red 12 12 12 12");
+
+		CEllipse ellipse = dynamic_cast<CEllipse&>(*shape.get());
+
+		REQUIRE(ellipse.GetColor() == Color::Red);
+		REQUIRE(ellipse.GetCenterPoint() == CPoint{12, 12});
+		REQUIRE(ellipse.GetWidthRadius() == 12);
+		REQUIRE(ellipse.GetHeightRadius() == 12);
+	}
+
+	SECTION("create rectangle")
+	{
+		auto shape = shapeFactory.CreateShape("rectangle red 12 12 12 12");
+
+		CRectangle rectangle = dynamic_cast<CRectangle&>(*shape.get());
+
+		REQUIRE(rectangle.GetColor() == Color::Red);
+		REQUIRE(rectangle.GetTopLeftPoint() == CPoint{12, 12});
+		REQUIRE(rectangle.GetWidth() == 12);
+		REQUIRE(rectangle.GetHeight() == 12);
+	}
+
+	SECTION("create triangle")
+	{
+		auto shape = shapeFactory.CreateShape("triangle red 12 12 12 12 12 12");
+
+		CTriangle triangle = dynamic_cast<CTriangle&>(*shape.get());
+
+		REQUIRE(triangle.GetColor() == Color::Red);
+		REQUIRE(triangle.GetFirstVertex() == CPoint{12, 12});
+		REQUIRE(triangle.GetSecondVertex() == CPoint{12, 12});
+		REQUIRE(triangle.GetThirdVertex() == CPoint{12, 12});
+	}
+
+	SECTION("create regular polygon")
+	{
+		auto shape = shapeFactory.CreateShape("regular_polygon red 12 12 12 12");
+
+		CRegularPolygon regularPolygon = dynamic_cast<CRegularPolygon&>(*shape.get());
+
+		REQUIRE(regularPolygon.GetColor() == Color::Red);
+		REQUIRE(regularPolygon.GetCenterPoint() == CPoint{12, 12});
+		REQUIRE(regularPolygon.GetRadius() == 12);
+		REQUIRE(regularPolygon.GetVertexCount() == 12);
 	}
 }
