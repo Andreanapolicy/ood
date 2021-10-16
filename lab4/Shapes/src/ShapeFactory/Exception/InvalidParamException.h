@@ -1,7 +1,7 @@
 #pragma once
 #include <stdexcept>
 
-class InvalidParamException : std::runtime_error
+class InvalidParamException : public std::runtime_error
 {
 public:
 	InvalidParamException(const std::string& message)

@@ -1,7 +1,7 @@
 #pragma once
 #include <stdexcept>
 
-class InvalidNameOfShapeException : std::runtime_error
+class InvalidNameOfShapeException : public std::runtime_error
 {
 public:
 	InvalidNameOfShapeException(const std::string& message)

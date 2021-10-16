@@ -28,23 +28,16 @@ public:
 					<< "triangle <color> <first vertex x> <first vertex y> <second vertex x> <second vertex y> <third vertex x> <third vertex y>" << std::endl
 					<< "ellipse <color> <center point x> <center point y> <horizontal radius> <vertical radius>" << std::endl
 					<< "regular_polygon <color> <vertex count> <center point x> <center point y> <radius>" << std::endl;
+
 				continue;
 			}
 			try
 			{
 				pictureDraft.AddShape(m_factory.CreateShape(command));
 			}
-			catch (const InvalidNameOfShapeException& exception)
+			catch (const std::exception& exception)
 			{
-				std::cout << exception.GetMessage() << std::endl;
-			}
-			catch (const InvalidParamException& exception)
-			{
-				std::cout << exception.GetMessage() << std::endl;
-			}
-			catch (const InvalidParamsCountException& exception)
-			{
-				std::cout << exception.GetMessage() << std::endl;
+				std::cout << "Error: " << exception.what() << std::endl;
 			}
 		}
 

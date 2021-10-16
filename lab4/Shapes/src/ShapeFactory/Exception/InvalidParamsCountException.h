@@ -1,7 +1,7 @@
 #pragma once
 #include <stdexcept>
 
-class InvalidParamsCountException : std::runtime_error
+class InvalidParamsCountException : public std::runtime_error
 {
 public:
 	InvalidParamsCountException(const std::string& message)
