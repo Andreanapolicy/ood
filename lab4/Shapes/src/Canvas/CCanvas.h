@@ -54,7 +54,7 @@ public:
 
 		circleShape.setOrigin((float)widthRadius, (float)widthRadius);
 		circleShape.move(sf::Vector2f((float)centerPoint.getX(), (float)m_renderTarget.getSize().y - (float)centerPoint.getY()));
-		circleShape.setScale(1.f, float(heightRadius / widthRadius));
+		circleShape.setScale(1.f, float(heightRadius) / float(widthRadius));
 		circleShape.setOutlineColor(m_color);
 		circleShape.setOutlineThickness(3.f);
 		circleShape.setFillColor(sf::Color::White);
