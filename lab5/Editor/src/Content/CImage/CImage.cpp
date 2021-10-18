@@ -44,7 +44,13 @@ int CImage::GetHeight() const
 
 void CImage::Resize(int width, int height)
 {
+	if (width < 1 || width > 10000 || height < 1 || height > 10000)
+	{
+		throw WrongImageSizeException("Error, wrong image size(should be [1, 10000])");
+	}
 
+	m_width = width;
+	m_height = height;
 }
 
 void CImage::Remove()
