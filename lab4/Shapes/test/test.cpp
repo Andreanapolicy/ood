@@ -273,3 +273,30 @@ TEST_CASE("test factory functionality")
 		REQUIRE(regularPolygon.GetVertexCount() == 12);
 	}
 }
+
+TEST_CASE("test painter functionality")
+{
+	GIVEN("picture draft and test canvas")
+	{
+		CPictureDraft pictureDraft;
+		TestCanvas testCanvas;
+
+		CEllipse ellipse(Color::Yellow, { 12, 12 }, 5, 12);
+		auto ellipsePtr = std::make_unique<CEllipse>(ellipse);
+		pictureDraft.AddShape(std::move(ellipsePtr));
+
+		CRegularPolygon regularPolygon(Color::Yellow, 4, { 12, 12 }, 12);
+		auto regularPolygonPtr = std::make_unique<CRegularPolygon>(regularPolygon);
+		pictureDraft.AddShape(std::move(regularPolygonPtr));
+
+		WHEN("draw figures via painter")
+		{
+			REQUIRE_NOTHROW(CPainter::DrawPicture(pictureDraft, testCanvas));
+
+			THEN("figures will be on the test canvas")
+			{
+				REQUIRE(testCanvas.GetResult() == std::vector<std::string>{"set color", "draw ellipse", "set color", "draw line", "draw line", "draw line", "draw line"});
+			}
+		}
+	}
+}
