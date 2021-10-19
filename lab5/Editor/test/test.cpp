@@ -4,6 +4,8 @@
 #include "../src/Content/CParagraph/CParagraph.h"
 #include "../src/Document/CDocumentItem/CDocumentItem.h"
 #include "../src/Document/CConstDocumentItem/CConstDocumentItem.h"
+#include "../src/History/CHistory/CHistory.h"
+#include "../test/Command/CTestCommand/CTestCommand.h"
 
 TEST_CASE("check creation image")
 {
@@ -138,6 +140,94 @@ TEST_CASE("test DocumentItem and ConstDocumentItem")
 			THEN("result ptr will be nullptr")
 			{
 				REQUIRE(constDocumentItem.GetImage() == nullptr);
+			}
+		}
+	}
+}
+
+TEST_CASE("test history functional")
+{
+	CHistory history;
+
+	SECTION("history is empty")
+	{
+		REQUIRE(history.CanUndo() == false);
+		REQUIRE(history.CanRedo() == false);
+	}
+
+	SECTION("1 command in history")
+	{
+		history.AddAndExecuteCommand(std::make_unique<CTestCommand>());
+
+		THEN("can undo, but cannot redo")
+		{
+			REQUIRE(history.CanUndo() == true);
+			REQUIRE(history.CanRedo() == false);
+		}
+
+		WHEN("undo command")
+		{
+			history.Undo();
+
+			THEN("can redo but cannot undo")
+			{
+				REQUIRE(history.CanUndo() == false);
+				REQUIRE(history.CanRedo() == true);
+			}
+
+			THEN("after redo will be able undo, but not redo")
+			{
+				history.Redo();
+
+				REQUIRE(history.CanUndo() == true);
+				REQUIRE(history.CanRedo() == false);
+			}
+		}
+	}
+
+	SECTION("deleting redo commands after adding new command in undo")
+	{
+		history.AddAndExecuteCommand(std::make_unique<CTestCommand>());
+		history.AddAndExecuteCommand(std::make_unique<CTestCommand>());
+		history.AddAndExecuteCommand(std::make_unique<CTestCommand>());
+
+		WHEN("undo 2 command command and add 1 command")
+		{
+			history.Undo();
+			history.Undo();
+			history.AddAndExecuteCommand(std::make_unique<CTestCommand>());
+
+			THEN("can redo but cannot undo")
+			{
+				REQUIRE(history.CanRedo() == false);
+			}
+		}
+	}
+
+	SECTION("adding limit number command")
+	{
+		WHEN("add 20 command to history")
+		{
+			for (auto index = 0; index < 20; index ++)
+			{
+				history.AddAndExecuteCommand(std::make_unique<CTestCommand>());
+			}
+
+			THEN("only last 10 will be available")
+			{
+				auto undoCount = 0;
+				for (auto index = 0; index < 20; index ++)
+				{
+					if (history.CanUndo())
+					{
+						undoCount++;
+					}
+
+					history.Undo();
+				}
+
+				REQUIRE(history.CanUndo() == false);
+				REQUIRE(undoCount == 10);
 			}
 		}
 	}
