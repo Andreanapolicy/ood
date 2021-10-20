@@ -5,13 +5,13 @@
 class CChangeTitleCommand : public CAbstractCommand
 {
 public:
-	CChangeTitleCommand(std::string& oldTitle, std::string const& newTitle);
+	CChangeTitleCommand(std::string& currentTitle, std::string const& newTitle);
 
 private:
 	void DoExecute() override;
 
 	void DoUnexecute() override;
 
-	std::string& m_oldTitle;
+	std::string& m_currentTitle;
 	std::string m_newTitle;
 };

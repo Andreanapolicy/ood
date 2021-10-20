@@ -8,6 +8,7 @@
 #include "../test/Command/CTestCommand/CTestCommand.h"
 #include "../src/Command/CChangeTitleCommand/CChangeTitleCommand.h"
 #include "../src/Command/CReplaceTextParagraphCommand/CReplaceTextParagraphCommand.h"
+#include "../src/Command/CResizeImageCommand/CResizeImageCommand.h"
 
 TEST_CASE("check creation image")
 {
@@ -281,6 +282,54 @@ TEST_CASE("test of change text paragraph command")
 			replaceTextParagraphCommand.Unexecute();
 
 			REQUIRE(oldText == "Garbage");
+		}
+	}
+}
+
+TEST_CASE("test of resize image command")
+{
+	SECTION("check non throwing action")
+	{
+		int currentWidth = 150;
+		int currentHeight = 150;
+		int newWidth = 250;
+		int newHeight = 250;
+
+		CResizeImageCommand resizeImageCommand(currentWidth, currentHeight, newWidth, newHeight);
+
+		WHEN("change size")
+		{
+			resizeImageCommand.Execute();
+
+			THEN("new size will be 250 250")
+			{
+				REQUIRE(currentWidth == 250);
+				REQUIRE(currentHeight == 250);
+			}
+
+			THEN("after unexecute new size will be 150 150")
+			{
+				resizeImageCommand.Unexecute();
+
+				REQUIRE(currentWidth == 150);
+				REQUIRE(currentHeight == 150);
+			}
+		}
+	}
+
+	SECTION("check throwing action")
+	{
+		int currentWidth = 150;
+		int currentHeight = 150;
+		int newWidth = 0;
+		int newHeight = 250;
+
+		WHEN("change size")
+		{
+			THEN("exception")
+			{
+				REQUIRE_THROWS_AS(CResizeImageCommand(currentWidth, currentHeight, newWidth, newHeight), WrongImageSizeException);
+			}
 		}
 	}
 }
