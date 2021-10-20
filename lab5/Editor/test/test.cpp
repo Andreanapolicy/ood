@@ -6,6 +6,7 @@
 #include "../src/Document/CConstDocumentItem/CConstDocumentItem.h"
 #include "../src/History/CHistory/CHistory.h"
 #include "../test/Command/CTestCommand/CTestCommand.h"
+#include "../src/Command/CChangeTitleCommand/CChangeTitleCommand.h"
 
 TEST_CASE("check creation image")
 {
@@ -229,6 +230,31 @@ TEST_CASE("test history functional")
 				REQUIRE(history.CanUndo() == false);
 				REQUIRE(undoCount == 10);
 			}
+		}
+	}
+}
+
+TEST_CASE("test of change title command")
+{
+	std::string oldTitle = "Garbage";
+	std::string newTitle = "For sale";
+
+	CChangeTitleCommand changeTitleCommand(oldTitle, newTitle);
+
+	WHEN("change title")
+	{
+		changeTitleCommand.Execute();
+
+		THEN("new title will be `For sale`")
+		{
+			REQUIRE(oldTitle == "For sale");
+		}
+
+		THEN("after unexecute new title will be `Garbage`")
+		{
+			changeTitleCommand.Unexecute();
+
+			REQUIRE(oldTitle == "Garbage");
 		}
 	}
 }
