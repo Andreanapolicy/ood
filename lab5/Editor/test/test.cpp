@@ -7,6 +7,7 @@
 #include "../src/History/CHistory/CHistory.h"
 #include "../test/Command/CTestCommand/CTestCommand.h"
 #include "../src/Command/CChangeTitleCommand/CChangeTitleCommand.h"
+#include "../src/Command/CReplaceTextParagraphCommand/CReplaceTextParagraphCommand.h"
 
 TEST_CASE("check creation image")
 {
@@ -255,6 +256,31 @@ TEST_CASE("test of change title command")
 			changeTitleCommand.Unexecute();
 
 			REQUIRE(oldTitle == "Garbage");
+		}
+	}
+}
+
+TEST_CASE("test of change text paragraph command")
+{
+	std::string oldText = "Garbage";
+	std::string newText = "For sale";
+
+	CReplaceTextParagraphCommand replaceTextParagraphCommand(oldText, newText);
+
+	WHEN("change text")
+	{
+		replaceTextParagraphCommand.Execute();
+
+		THEN("new text will be `For sale`")
+		{
+			REQUIRE(oldText == "For sale");
+		}
+
+		THEN("after unexecute new text will be `Garbage`")
+		{
+			replaceTextParagraphCommand.Unexecute();
+
+			REQUIRE(oldText == "Garbage");
 		}
 	}
 }
