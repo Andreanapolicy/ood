@@ -4,35 +4,35 @@
 #include "../src/Content/CParagraph/CParagraph.h"
 #include "../src/Document/CDocumentItem/CDocumentItem.h"
 #include "../src/Document/CConstDocumentItem/CConstDocumentItem.h"
-#include "../src/History/CHistory/CHistory.h"
 #include "../test/Command/CTestCommand/CTestCommand.h"
 #include "../src/Command/CChangeTitleCommand/CChangeTitleCommand.h"
 #include "../src/Command/CReplaceTextParagraphCommand/CReplaceTextParagraphCommand.h"
-#include "../src/Command/CResizeImageCommand/CResizeImageCommand.h"
 
 TEST_CASE("check creation image")
 {
+	CHistory history;
+
 	SECTION("construction with exceptions(wrong extention)")
 	{
-		REQUIRE_THROWS_AS(CImage("hello.js", 200, 200), ImageDoesNotExistException);
+		REQUIRE_THROWS_AS(CImage("hello.js", 200, 200, history), ImageDoesNotExistException);
 	}
 
 	SECTION("construction with exceptions(file does not exist)")
 	{
-		REQUIRE_THROWS_AS(CImage("hello.png", 200, 200), ImageDoesNotExistException);
+		REQUIRE_THROWS_AS(CImage("hello.png", 200, 200, history), ImageDoesNotExistException);
 	}
 
 	SECTION("construction with exceptions(wrong size)")
 	{
-		REQUIRE_THROWS_AS(CImage("../test/image.png", 0, 200), WrongImageSizeException);
-		REQUIRE_THROWS_AS(CImage("../test/image.png", 200, -1), WrongImageSizeException);
-		REQUIRE_THROWS_AS(CImage("../test/image.png", 200, 20000), WrongImageSizeException);
-		REQUIRE_THROWS_AS(CImage("../test/image.png", 20000, 200), WrongImageSizeException);
+		REQUIRE_THROWS_AS(CImage("../test/image.png", 0, 200, history), WrongImageSizeException);
+		REQUIRE_THROWS_AS(CImage("../test/image.png", 200, -1, history), WrongImageSizeException);
+		REQUIRE_THROWS_AS(CImage("../test/image.png", 200, 20000, history), WrongImageSizeException);
+		REQUIRE_THROWS_AS(CImage("../test/image.png", 20000, 200, history), WrongImageSizeException);
 	}
 
 	SECTION("create image without exceptions")
 	{
-		CImage image("../test/image.png", 200, 350);
+		CImage image("../test/image.png", 200, 350, history);
 
 		THEN("Getters have to get right values")
 		{
@@ -45,9 +45,11 @@ TEST_CASE("check creation image")
 
 TEST_CASE("check creation paragraphs")
 {
+	CHistory history;
+
 	SECTION("create image without exceptions")
 	{
-		CParagraph paragraph("hello");
+		CParagraph paragraph("hello", history);
 
 		REQUIRE(paragraph.GetText() == "hello");
 	}
@@ -55,9 +57,11 @@ TEST_CASE("check creation paragraphs")
 
 TEST_CASE("test DocumentItem and ConstDocumentItem")
 {
+	CHistory history;
+
 	SECTION("create DocumentItem via IImage")
 	{
-		CImage image("../test/image.png", 200, 200);
+		CImage image("../test/image.png", 200, 200, history);
 		CDocumentItem documentItem(std::make_shared<CImage>(image));
 
 		WHEN("take from document item paragraph")
@@ -81,7 +85,7 @@ TEST_CASE("test DocumentItem and ConstDocumentItem")
 
 	SECTION("create DocumentItem via IParagraph")
 	{
-		CParagraph paragraph("hello");
+		CParagraph paragraph("hello", history);
 		CDocumentItem documentItem(std::make_shared<CParagraph>(paragraph));
 
 		WHEN("take from document item paragraph")
@@ -103,7 +107,7 @@ TEST_CASE("test DocumentItem and ConstDocumentItem")
 
 	SECTION("create ConstDocumentItem via IImage")
 	{
-		CImage image("../test/image.png", 200, 200);
+		CImage image("../test/image.png", 200, 200, history);
 		CConstDocumentItem constDocumentItem(std::make_shared<const CImage>(image));
 
 		WHEN("take from document item paragraph")
@@ -127,7 +131,7 @@ TEST_CASE("test DocumentItem and ConstDocumentItem")
 
 	SECTION("create ConstDocumentItem via IParagraph")
 	{
-		CParagraph paragraph("hello");
+		CParagraph paragraph("hello", history);
 		CConstDocumentItem constDocumentItem(std::make_shared<CParagraph>(paragraph));
 
 		WHEN("take from document item paragraph")

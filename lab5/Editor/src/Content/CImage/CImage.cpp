@@ -1,7 +1,8 @@
 #include "CImage.h"
 #include <random>
 
-CImage::CImage(const std::string& path, const int width, const int height)
+CImage::CImage(const std::string& path, const int width, const int height, CHistory& history)
+	: m_history(history)
 {
 	if (CheckExtention(path) || !std::filesystem::exists(path))
 	{
@@ -44,18 +45,12 @@ int CImage::GetHeight() const
 
 void CImage::Resize(int width, int height)
 {
-	if (width < 1 || width > 10000 || height < 1 || height > 10000)
-	{
-		throw WrongImageSizeException("Error, wrong image size(should be [1, 10000])");
-	}
-
-	m_width = width;
-	m_height = height;
+	m_history.AddAndExecuteCommand(std::make_unique<CResizeImageCommand>(m_width, m_height, width, height));
 }
 
 void CImage::Remove()
 {
-
+	std::filesystem::remove(m_path);
 }
 
 std::string CImage::GenerateFileName(size_t length)
