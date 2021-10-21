@@ -1,12 +1,13 @@
 #define CATCH_CONFIG_MAIN
 #include "../../../catch2/catch.hpp"
+#include "../src/Command/CChangeTitleCommand/CChangeTitleCommand.h"
+#include "../src/Command/CInsertDocumentItemCommand/CInsertDocumentItemCommand.h"
+#include "../src/Command/Exception/CWrongIndexOfItemInDocumentException/CWrongIndexOfItemInDocumentException.h"
 #include "../src/Content/CImage/CImage.h"
 #include "../src/Content/CParagraph/CParagraph.h"
-#include "../src/Document/CDocumentItem/CDocumentItem.h"
 #include "../src/Document/CConstDocumentItem/CConstDocumentItem.h"
+#include "../src/Document/CDocumentItem/CDocumentItem.h"
 #include "../test/Command/CTestCommand/CTestCommand.h"
-#include "../src/Command/CChangeTitleCommand/CChangeTitleCommand.h"
-#include "../src/Command/CReplaceTextParagraphCommand/CReplaceTextParagraphCommand.h"
 
 TEST_CASE("check creation image")
 {
@@ -333,6 +334,85 @@ TEST_CASE("test of resize image command")
 			THEN("exception")
 			{
 				REQUIRE_THROWS_AS(CResizeImageCommand(currentWidth, currentHeight, newWidth, newHeight), WrongImageSizeException);
+			}
+		}
+	}
+}
+
+TEST_CASE("test of insert document item command")
+{
+	CHistory history;
+	CDocumentItem firstParagraph(std::make_unique<CParagraph>("hello", history));
+	CDocumentItem secondParagraph(std::make_unique<CParagraph>("bonjour", history));
+	CDocumentItem image(std::make_unique<CImage>("../test/image.png", 200, 350, history));
+
+	std::vector<CDocumentItem> items{};
+
+	SECTION("check throwing exception")
+	{
+		WHEN("add on 1 position")
+		{
+			THEN("exception about wrong index")
+			{
+				REQUIRE_THROWS_AS(CInsertDocumentItemCommand(firstParagraph, items, 1), CWrongIndexOfItemInDocumentException);
+			}
+		}
+	}
+
+	SECTION("check adding to end")
+	{
+		WHEN("add on 1 position, but before add at 0")
+		{
+			CInsertDocumentItemCommand(firstParagraph, items, 0).Execute();
+
+			THEN("first item will be paragraph with `hello`")
+			{
+				REQUIRE(items.size() == 1);
+				REQUIRE(items[0].GetParagraph()->GetText() == "hello");
+			}
+
+			THEN("add to end")
+			{
+				REQUIRE_NOTHROW(CInsertDocumentItemCommand(firstParagraph, items, items.size()));
+			}
+		}
+	}
+
+	SECTION("check adding and removing elements")
+	{
+		WHEN("add 1 paragraph")
+		{
+			CInsertDocumentItemCommand insertDocumentItemCommand(firstParagraph, items, 0);
+			insertDocumentItemCommand.Execute();
+
+			THEN("first item will be paragraph with `hello`")
+			{
+				REQUIRE(items.size() == 1);
+				REQUIRE(items[0].GetParagraph()->GetText() == "hello");
+			}
+
+			insertDocumentItemCommand.Unexecute();
+			THEN("after removing paragraph, document will be empty")
+			{
+				REQUIRE(items.empty());
+			}
+		}
+
+		WHEN("add 1 image")
+		{
+			CInsertDocumentItemCommand insertDocumentItemCommand(image, items, 0);
+			insertDocumentItemCommand.Execute();
+
+			THEN("first item will be image with width 200")
+			{
+				REQUIRE(items.size() == 1);
+				REQUIRE(items[0].GetImage()->GetWidth() == 200);
+			}
+
+			insertDocumentItemCommand.Unexecute();
+			THEN("after removing image, document will be empty")
+			{
+				REQUIRE(items.size() == 0);
 			}
 		}
 	}

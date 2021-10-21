@@ -6,7 +6,7 @@ CInsertDocumentItemCommand::CInsertDocumentItemCommand(CDocumentItem& newItem, s
  	, m_newItem(newItem)
  	, m_index(index)
 {
-	if (index >= items.size())
+	if (index > items.size())
 	{
 		throw CWrongIndexOfItemInDocumentException("Error, index greater then document size");
 	}
@@ -19,7 +19,7 @@ void CInsertDocumentItemCommand::DoExecute()
 
 void CInsertDocumentItemCommand::DoUnexecute()
 {
-	m_items.emplace(m_items.begin() + m_index, m_newItem);
+	m_items.erase(m_items.begin() + m_index);
 }
 
 CInsertDocumentItemCommand::~CInsertDocumentItemCommand()
