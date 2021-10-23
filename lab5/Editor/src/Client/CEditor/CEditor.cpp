@@ -2,9 +2,9 @@
 
 CEditor::CEditor(std::istream& inStream, std::ostream& outStream)
 	: m_outStream(outStream)
-	, m_inStream(inStream)
 	, m_document(std::make_unique<CDocument>())
 	, m_menu(inStream, outStream)
+	, m_saver(std::make_unique<CHTMLSaver>())
 {
 	m_menu.AddCommand("insertParagraph", "Insert in document paragraph", [this](std::istream& inStream) { InsertParagraph(inStream); });
 	m_menu.AddCommand("insertImage", "Insert in document image", [this](std::istream& inStream) { InsertImage(inStream); });
@@ -192,4 +192,20 @@ void CEditor::Redo(std::istream& inStream)
 
 void CEditor::Save(std::istream& inStream)
 {
+	std::string path;
+
+	try
+	{
+		if (!(getline(inStream, path)))
+		{
+			throw CInvalidParamsException("Error, invalid params for saving document");
+		}
+
+		m_saver->Save(path, *m_document);
+		m_menu.Exit();
+	}
+	catch (std::exception& exception)
+	{
+		m_outStream << exception.what() << std::endl;
+	}
 }

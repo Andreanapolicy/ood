@@ -1,5 +1,7 @@
 #pragma once
 #include "../CMenu/CMenu.h"
+#include "../../Storage/IStorage/IStorage.h"
+#include "../../Storage/CHTMLSaver/CHTMLSaver.h"
 #include "../../Document/CDocument/CDocument.h"
 #include "../Exception/CInvalidParamsException/CInvalidParamsException.h"
 
@@ -34,6 +36,7 @@ private:
 	std::unique_ptr<IDocument> m_document;
 	CMenu m_menu;
 
-	std::istream& m_inStream;
 	std::ostream& m_outStream;
+
+	std::unique_ptr<IStorage> m_saver;
 };

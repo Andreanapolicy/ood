@@ -5,7 +5,6 @@
 #include "../CDocumentItem/CDocumentItem.h"
 #include <memory>
 #include <optional>
-#include <string>
 
 class IDocument
 {

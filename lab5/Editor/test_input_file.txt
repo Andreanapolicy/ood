@@ -10,4 +10,6 @@ list
 undo
 insertParagraph end Its uncomfortable, so I just undo my resize
 list
+insertParagraph end And now, I want to save our talk to HTML. See u later)
+save result.html
 exit
