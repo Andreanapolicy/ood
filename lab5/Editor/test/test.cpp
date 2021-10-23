@@ -8,6 +8,7 @@
 #include "../src/Content/CParagraph/CParagraph.h"
 #include "../src/Document/CConstDocumentItem/CConstDocumentItem.h"
 #include "../src/Document/CDocumentItem/CDocumentItem.h"
+#include "../src/Client/CMenu/CMenu.h"
 #include "../test/Command/CTestCommand/CTestCommand.h"
 
 TEST_CASE("check creation image")
@@ -502,6 +503,106 @@ TEST_CASE("check delete item command")
 		{
 			REQUIRE(items.size() == 1);
 			REQUIRE(items[0].GetImage()->GetWidth() == 200);
+		}
+	}
+}
+
+TEST_CASE("check menu functionality")
+{
+	SECTION("check adding only one commands")
+	{
+		std::istringstream iss("hello");
+		std::ostringstream oss;
+		std::ostringstream result;
+		CMenu menu(iss, oss);
+
+		WHEN("add command print hello and run")
+		{
+			menu.AddCommand("hello", "print greetings to your pen friend", [&](std::istream& in) { result << "bonjour"; });
+			menu.Run();
+
+			THEN("in result will be 'bonjour'")
+			{
+				REQUIRE(result.str() == "bonjour");
+			}
+		}
+	}
+
+	SECTION("check adding two commands")
+	{
+		std::istringstream iss("hello\nbonjour");
+		std::ostringstream oss;
+		std::ostringstream result;
+		CMenu menu(iss, oss);
+
+		WHEN("add command print two different greetings and run")
+		{
+			menu.AddCommand("hello", "print greetings to your pen friend", [&](std::istream& in) { result << "bonjour"; });
+			menu.AddCommand("bonjour", "print greetings to your pen friend", [&](std::istream& in) { result << "hello"; });
+			menu.Run();
+
+			THEN("in result will be 'bonjourhello'")
+			{
+				REQUIRE(result.str() == "bonjourhello");
+			}
+		}
+
+		WHEN("add command print two different greetings and run")
+		{
+			menu.AddCommand("hello", "print greetings to your pen friend", [&](std::istream& in) { result << "bonjour"; });
+			menu.AddCommand("bonjour", "print greetings to your pen friend", [&](std::istream& in) { result << "hello"; });
+			menu.ShowCommands();
+
+			THEN("in oss will command descriptions")
+			{
+				REQUIRE(oss.str() == "1. <hello>: print greetings to your pen friend\n2. <bonjour>: print greetings to your pen friend\n");
+			}
+		}
+	}
+
+	SECTION("check call undefined command")
+	{
+		std::istringstream iss("hola!");
+		std::ostringstream oss;
+		std::ostringstream result;
+		CMenu menu(iss, oss);
+
+		WHEN("add command print two different greetings and run")
+		{
+			menu.AddCommand("hello", "print greetings to your pen friend", [&](std::istream& in) { result << "bonjour"; });
+			menu.AddCommand("bonjour", "print greetings to your pen friend", [&](std::istream& in) { result << "hello"; });
+			menu.Run();
+
+			THEN("result will be empty")
+			{
+				REQUIRE(result.str().empty());
+			}
+
+			THEN("oss will be contain error message")
+			{
+				REQUIRE(oss.str() == ">Error, wrong command\n>");
+			}
+		}
+	}
+
+	SECTION("check exiting")
+	{
+		std::istringstream iss("hello\nexit\nbonjour");
+		std::ostringstream oss;
+		std::ostringstream result;
+		CMenu menu(iss, oss);
+
+		WHEN("add command print two different greetings and run")
+		{
+			menu.AddCommand("hello", "print greetings to your pen friend", [&](std::istream& in) { oss << "bonjour\n"; });
+			menu.AddCommand("bonjour", "print greetings to your pen friend", [&](std::istream& in) { oss << "hello\n"; });
+			menu.AddCommand("exit", "exit from program", [&](std::istream& in) { menu.Exit(); });
+			menu.Run();
+
+			THEN("in oss will be only 'bonjour'")
+			{
+				REQUIRE(oss.str() == ">bonjour\n>");
+			}
 		}
 	}
 }
