@@ -1,7 +1,7 @@
 #include "CDocumentItem.h"
 
 CDocumentItem::CDocumentItem(std::variant<std::shared_ptr<IImage>, std::shared_ptr<IParagraph>>&& item)
-	: m_item(std::move(item))
+	: CConstDocumentItem(std::move(item))
 {
 }
 

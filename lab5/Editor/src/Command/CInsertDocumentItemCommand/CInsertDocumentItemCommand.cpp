@@ -1,6 +1,6 @@
 #include "CInsertDocumentItemCommand.h"
 
-CInsertDocumentItemCommand::CInsertDocumentItemCommand(CDocumentItem& newItem, std::vector<CDocumentItem>& items, size_t index)
+CInsertDocumentItemCommand::CInsertDocumentItemCommand(std::vector<CDocumentItem>& items, CDocumentItem& newItem, size_t index)
 	: m_items(items)
  	, m_newItem(newItem)
  	, m_index(index)

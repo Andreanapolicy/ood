@@ -1,7 +1,11 @@
 #include <iostream>
+#include "./src/Client/CEditor/CEditor.h"
 
 int main()
 {
-	std::cout << "Hello, World!" << std::endl;
+	CEditor editor(std::cin, std::cout);
+
+	editor.Run();
+
 	return 0;
 }

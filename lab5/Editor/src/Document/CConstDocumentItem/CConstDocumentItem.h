@@ -5,12 +5,12 @@
 class CConstDocumentItem : public IConstDocumentItem
 {
 public:
-	CConstDocumentItem(std::variant<std::shared_ptr<const IImage>, std::shared_ptr<const IParagraph>>&& item);
+	CConstDocumentItem(std::variant<std::shared_ptr<IImage>, std::shared_ptr<IParagraph>>&& item);
 
-	std::shared_ptr<const IImage> GetImage() override;
+	std::shared_ptr<const IImage> GetImage() const override;
 
-	std::shared_ptr<const IParagraph> GetParagraph() override;
+	std::shared_ptr<const IParagraph> GetParagraph() const override;
 
-private:
-	std::variant<std::shared_ptr<const IImage>, std::shared_ptr<const IParagraph>> m_item;
+protected:
+	std::variant<std::shared_ptr<IImage>, std::shared_ptr<IParagraph>> m_item;
 };

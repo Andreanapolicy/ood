@@ -1,3 +1,4 @@
+#pragma once
 #include "../../Document/CDocumentItem/CDocumentItem.h"
 #include "../CAbstractCommand/CAbstractCommand.h"
 #include "../Exception/CWrongIndexOfItemInDocumentException/CWrongIndexOfItemInDocumentException.h"

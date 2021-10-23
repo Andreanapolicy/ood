@@ -7,7 +7,7 @@
 class CInsertDocumentItemCommand : public CAbstractCommand
 {
 public:
-	CInsertDocumentItemCommand(CDocumentItem& newItem, std::vector<CDocumentItem>& items, size_t index);
+	CInsertDocumentItemCommand(std::vector<CDocumentItem>& items, CDocumentItem& newItem, size_t index);
 
 	~CInsertDocumentItemCommand();
 

@@ -6,8 +6,7 @@
 #include "../src/Command/Exception/CWrongIndexOfItemInDocumentException/CWrongIndexOfItemInDocumentException.h"
 #include "../src/Content/CImage/CImage.h"
 #include "../src/Content/CParagraph/CParagraph.h"
-#include "../src/Document/CConstDocumentItem/CConstDocumentItem.h"
-#include "../src/Document/CDocumentItem/CDocumentItem.h"
+#include "../src/Document/CDocument/CDocument.h"
 #include "../src/Client/CMenu/CMenu.h"
 #include "../test/Command/CTestCommand/CTestCommand.h"
 
@@ -111,7 +110,7 @@ TEST_CASE("test DocumentItem and ConstDocumentItem")
 	SECTION("create ConstDocumentItem via IImage")
 	{
 		CImage image("../test/image.png", 200, 200, history);
-		CConstDocumentItem constDocumentItem(std::make_shared<const CImage>(image));
+		CConstDocumentItem constDocumentItem(std::make_shared<CImage>(image));
 
 		WHEN("take from document item paragraph")
 		{
@@ -356,7 +355,7 @@ TEST_CASE("test of insert document item command")
 		{
 			THEN("exception about wrong index")
 			{
-				REQUIRE_THROWS_AS(CInsertDocumentItemCommand(firstParagraph, items, 1), CWrongIndexOfItemInDocumentException);
+				REQUIRE_THROWS_AS(CInsertDocumentItemCommand(items, firstParagraph, 1), CWrongIndexOfItemInDocumentException);
 			}
 		}
 	}
@@ -365,7 +364,7 @@ TEST_CASE("test of insert document item command")
 	{
 		WHEN("add on 1 position, but before add at 0")
 		{
-			CInsertDocumentItemCommand(firstParagraph, items, 0).Execute();
+			CInsertDocumentItemCommand(items, firstParagraph, 0).Execute();
 
 			THEN("first item will be paragraph with `hello`")
 			{
@@ -375,7 +374,7 @@ TEST_CASE("test of insert document item command")
 
 			THEN("add to end")
 			{
-				REQUIRE_NOTHROW(CInsertDocumentItemCommand(firstParagraph, items, items.size()));
+				REQUIRE_NOTHROW(CInsertDocumentItemCommand(items, firstParagraph, items.size()));
 			}
 		}
 	}
@@ -384,7 +383,7 @@ TEST_CASE("test of insert document item command")
 	{
 		WHEN("add 1 paragraph")
 		{
-			CInsertDocumentItemCommand insertDocumentItemCommand(firstParagraph, items, 0);
+			CInsertDocumentItemCommand insertDocumentItemCommand(items, firstParagraph, 0);
 			insertDocumentItemCommand.Execute();
 
 			THEN("first item will be paragraph with `hello`")
@@ -402,7 +401,7 @@ TEST_CASE("test of insert document item command")
 
 		WHEN("add 1 image")
 		{
-			CInsertDocumentItemCommand insertDocumentItemCommand(image, items, 0);
+			CInsertDocumentItemCommand insertDocumentItemCommand(items, image, 0);
 			insertDocumentItemCommand.Execute();
 
 			THEN("first item will be image with width 200")
@@ -602,6 +601,165 @@ TEST_CASE("check menu functionality")
 			THEN("in oss will be only 'bonjour'")
 			{
 				REQUIRE(oss.str() == ">bonjour\n>");
+			}
+		}
+	}
+}
+
+TEST_CASE("check document functionality")
+{
+	CDocument document;
+
+	SECTION("empty document")
+	{
+		THEN("empty document has 0 size and empty title")
+		{
+			REQUIRE(document.GetTitle().empty());
+			REQUIRE(document.GetItemsCount() == 0);
+		}
+	}
+
+	SECTION("default one element in document")
+	{
+		WHEN("insert paragraph with text 'hello'")
+		{
+			document.InsertParagraph("hello", 0);
+
+			THEN("size == 1, item is paragraph")
+			{
+				REQUIRE(document.GetTitle().empty());
+				REQUIRE(document.GetItemsCount() == 1);
+				REQUIRE_NOTHROW(document.GetItem(0));
+				REQUIRE(document.GetItem(0).GetParagraph()->GetText() == "hello");
+			}
+		}
+	}
+
+	SECTION("check setting title")
+	{
+		WHEN("set title 'first'")
+		{
+			document.SetTitle("first");
+
+			THEN("size == 0, title is 'first'")
+			{
+				REQUIRE(document.GetTitle() == "first");
+				REQUIRE(document.GetItemsCount() == 0);
+				REQUIRE(document.CanUndo());
+			}
+
+			document.Undo();
+			THEN("after undo, title become empty")
+			{
+				REQUIRE(document.GetTitle().empty());
+			}
+		}
+	}
+
+	SECTION("check resizing image")
+	{
+		WHEN("add paragraph and resize it")
+		{
+			document.InsertParagraph("hello", 0);
+
+			THEN("exception")
+			{
+				REQUIRE_THROWS_AS(document.ResizeImage(0, 200, 200), CWrongItemException);
+			}
+		}
+
+		WHEN("add image")
+		{
+			document.InsertImage("../test/image.png", 200, 200, 0);
+
+			THEN("all data of image is consistent")
+			{
+				REQUIRE(document.GetTitle().empty());
+				REQUIRE(document.GetItemsCount() == 1);
+				REQUIRE(document.CanUndo());
+				REQUIRE(document.GetItem(0).GetImage()->GetWidth() == 200);
+				REQUIRE(document.GetItem(0).GetImage()->GetHeight() == 200);
+			}
+
+			document.ResizeImage(0, 100, 100);
+
+			THEN("all data of image is consistent")
+			{
+				REQUIRE(document.GetTitle().empty());
+				REQUIRE(document.GetItemsCount() == 1);
+				REQUIRE(document.CanUndo());
+				REQUIRE(document.GetItem(0).GetImage()->GetWidth() == 100);
+				REQUIRE(document.GetItem(0).GetImage()->GetHeight() == 100);
+			}
+
+			document.Undo();
+			THEN("after undo, size become 200 x 200")
+			{
+				REQUIRE(document.GetTitle().empty());
+				REQUIRE(document.GetItemsCount() == 1);
+				REQUIRE(document.CanUndo());
+				REQUIRE(document.GetItem(0).GetImage()->GetWidth() == 200);
+				REQUIRE(document.GetItem(0).GetImage()->GetHeight() == 200);
+			}
+		}
+	}
+
+	SECTION("check deleting items")
+	{
+		WHEN("add image and paragraph")
+		{
+			document.InsertImage("../test/image.png", 200, 200, 0);
+			document.InsertParagraph("hello", 0);
+
+			THEN("two elements in document")
+			{
+				REQUIRE(document.GetTitle().empty());
+				REQUIRE(document.GetItemsCount() == 2);
+				REQUIRE(document.CanUndo());
+			}
+
+			document.RemoveItem(0);
+			THEN("after deleting first, new first will be image")
+			{
+				REQUIRE(document.GetItemsCount() == 1);
+				REQUIRE(document.GetItem(0).GetImage());
+			}
+		}
+	}
+
+	SECTION("check replacing text in paragraph")
+	{
+		WHEN("add image and replace text")
+		{
+			document.InsertImage("../test/image.png", 200, 200, 0);
+
+			THEN("exception")
+			{
+				REQUIRE_THROWS_AS(document.ReplaceParagraphText(0, "hello"), CWrongItemException);
+			}
+		}
+
+		WHEN("add paragraph and replace text")
+		{
+			document.InsertParagraph("hello", 0);
+
+			document.ReplaceParagraphText(0, "bonjour");
+
+			THEN("new text")
+			{
+				REQUIRE(document.GetItem(0).GetParagraph()->GetText() == "bonjour");
+			}
+
+			document.Undo();
+			THEN("after undo text become 'hello'")
+			{
+				REQUIRE(document.GetItem(0).GetParagraph()->GetText() == "hello");
+			}
+
+			document.Redo();
+			THEN("after redo text become 'bonjour'")
+			{
+				REQUIRE(document.GetItem(0).GetParagraph()->GetText() == "bonjour");
 			}
 		}
 	}
