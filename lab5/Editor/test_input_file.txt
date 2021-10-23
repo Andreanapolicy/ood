@@ -1,0 +1,13 @@
+setTitle Hello There!
+insertParagraph end My name is Banana
+list
+insertImage end 500 250 ../banana.jpg
+list
+insertParagraph end Yes, it's me. I'm look pretty well. But if I resize myself
+list
+resizeImage 1 1000 500
+list
+undo
+insertParagraph end Its uncomfortable, so I just undo my resize
+list
+exit
