@@ -2,6 +2,7 @@
 #include "../../../catch2/catch.hpp"
 #include "../src/Command/CChangeTitleCommand/CChangeTitleCommand.h"
 #include "../src/Command/CInsertDocumentItemCommand/CInsertDocumentItemCommand.h"
+#include "../src/Command/CDeleteItemCommand/CDeleteItemCommand.h"
 #include "../src/Command/Exception/CWrongIndexOfItemInDocumentException/CWrongIndexOfItemInDocumentException.h"
 #include "../src/Content/CImage/CImage.h"
 #include "../src/Content/CParagraph/CParagraph.h"
@@ -414,6 +415,93 @@ TEST_CASE("test of insert document item command")
 			{
 				REQUIRE(items.size() == 0);
 			}
+		}
+	}
+}
+
+TEST_CASE("check delete item command")
+{
+	CHistory history;
+	CDocumentItem firstParagraph(std::make_unique<CParagraph>("hello", history));
+	CDocumentItem secondParagraph(std::make_unique<CParagraph>("bonjour", history));
+	CDocumentItem image(std::make_unique<CImage>("../test/image.png", 200, 350, history));
+	std::vector<CDocumentItem> items{};
+
+	SECTION("check throwing")
+	{
+		WHEN("delete from empty document")
+		{
+			THEN("throw exception")
+			{
+				REQUIRE_THROWS_AS(CDeleteItemCommand(items, 0), CWrongIndexOfItemInDocumentException);
+			}
+		}
+
+		WHEN("delete from non empty document with wrong index")
+		{
+			items.push_back(firstParagraph);
+
+			THEN("throw exception")
+			{
+				REQUIRE_THROWS_AS(CDeleteItemCommand(items, 1), CWrongIndexOfItemInDocumentException);
+			}
+		}
+	}
+
+	SECTION("check deleting from")
+	{
+		items.push_back(firstParagraph);
+		items.push_back(secondParagraph);
+
+		WHEN("delete second item")
+		{
+			CDeleteItemCommand deleteSecondItemCommand(items, 1);
+			CDeleteItemCommand deleteFirstItemCommand(items, 0);
+
+			deleteSecondItemCommand.Execute();
+			THEN("size of document will be 1")
+			{
+				REQUIRE(items.size() == 1);
+				REQUIRE(items[0].GetParagraph()->GetText() == "hello");
+			}
+			deleteSecondItemCommand.Unexecute();
+
+			THEN("after unexecute size will be 2")
+			{
+				REQUIRE(items.size() == 2);
+			}
+
+			deleteFirstItemCommand.Execute();
+			THEN("size of document will be 1")
+			{
+				REQUIRE(items.size() == 1);
+				REQUIRE(items[0].GetParagraph()->GetText() == "bonjour");
+			}
+			deleteFirstItemCommand.Unexecute();
+
+			THEN("after unexecute size will be 2")
+			{
+				REQUIRE(items.size() == 2);
+			}
+		}
+	}
+
+	SECTION("check deleting image")
+	{
+		items.push_back(image);
+		CDeleteItemCommand deleteFirstItemCommand(items, 0);
+
+		deleteFirstItemCommand.Execute();
+		THEN("after removing image, document will be empty")
+		{
+			REQUIRE(items.size() == 0);
+		}
+
+		deleteFirstItemCommand.Unexecute();
+		THEN("first item will be image with width 200")
+		{
+			REQUIRE(items.size() == 1);
+			REQUIRE(items[0].GetImage()->GetWidth() == 200);
 		}
 	}
 }

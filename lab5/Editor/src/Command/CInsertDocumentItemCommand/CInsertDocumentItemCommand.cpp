@@ -1,5 +1,4 @@
 #include "CInsertDocumentItemCommand.h"
-#include "../Exception/CWrongIndexOfItemInDocumentException/CWrongIndexOfItemInDocumentException.h"
 
 CInsertDocumentItemCommand::CInsertDocumentItemCommand(CDocumentItem& newItem, std::vector<CDocumentItem>& items, size_t index)
 	: m_items(items)
@@ -24,7 +23,7 @@ void CInsertDocumentItemCommand::DoUnexecute()
 
 CInsertDocumentItemCommand::~CInsertDocumentItemCommand()
 {
-	if (m_newItem.GetImage() && !IsExecuted())
+	if (!IsExecuted() && m_newItem.GetImage())
 	{
 		m_newItem.GetImage()->Remove();
 	}
