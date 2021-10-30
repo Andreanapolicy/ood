@@ -20,10 +20,10 @@ public:
 class CTriangle : public ICanvasDrawable
 {
 public:
-	CTriangle(const Point& p1, const Point& p2, const Point& p3)
-		: m_firstVertex(p1)
-		, m_secondVertex(p2)
-		, m_thirdVertex(p3)
+	CTriangle(const Point& firstVertex, const Point& secondVertex, const Point& thirdVertex)
+		: m_firstVertex(firstVertex)
+		, m_secondVertex(secondVertex)
+		, m_thirdVertex(thirdVertex)
 	{
 	}
 
@@ -44,7 +44,7 @@ private:
 class CRectangle : public ICanvasDrawable
 {
 public:
-	CRectangle(const Point& leftTop, int width, int height)
+	CRectangle(const Point& leftTop, const int width, const int height)
 		: m_leftTopVertex(leftTop)
 		, m_width(width)
 		, m_height(height)
