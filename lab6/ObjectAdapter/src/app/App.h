@@ -11,12 +11,6 @@ public:
 	CModernGraphicsLibAdapter(modern_graphics_lib::CModernGraphicsRenderer& modernGraphicsRenderer)
 		: m_modernGraphicsRenderer(modernGraphicsRenderer)
 	{
-		m_modernGraphicsRenderer.BeginDraw();
-	}
-
-	~CModernGraphicsLibAdapter() override
-	{
-		m_modernGraphicsRenderer.EndDraw();
 	}
 
 	void MoveTo(int x, int y) override

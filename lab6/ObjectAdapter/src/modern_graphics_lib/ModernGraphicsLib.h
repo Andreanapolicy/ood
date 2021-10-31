@@ -51,7 +51,7 @@ public:
 		}
 
 		m_out << "<line fromX=" + std::to_string(start.x) + " fromY=" + std::to_string(start.y)
-				<< " toX=" + std::to_string(end.x) + " toY=" + std::to_string(end.y) + "/>)" << std::endl;
+				<< " toX=" + std::to_string(end.x) + " toY=" + std::to_string(end.y) + "/>" << std::endl;
 	}
 
 	void EndDraw()
