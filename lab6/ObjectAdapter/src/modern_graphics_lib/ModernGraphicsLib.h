@@ -16,6 +16,20 @@ public:
 	int y;
 };
 
+class CRGBAColor
+{
+public:
+	CRGBAColor(float r, float g, float b, float a)
+		: r(r)
+		, g(g)
+		, b(b)
+		, a(a)
+	{
+	}
+
+	float r, g, b, a;
+};
+
 class CModernGraphicsRenderer
 {
 public:
@@ -43,7 +57,7 @@ public:
 		m_drawing = true;
 	}
 
-	void DrawLine(const CPoint& start, const CPoint& end)
+	void DrawLine(const CPoint& start, const CPoint& end, const CRGBAColor& color)
 	{
 		if (!m_drawing)
 		{
@@ -51,7 +65,13 @@ public:
 		}
 
 		m_out << "<line fromX=" + std::to_string(start.x) + " fromY=" + std::to_string(start.y)
-				<< " toX=" + std::to_string(end.x) + " toY=" + std::to_string(end.y) + "/>" << std::endl;
+				<< " toX=" + std::to_string(end.x) + " toY=" + std::to_string(end.y) + ">" << std::endl;
+		m_out << "<color r='" << (int)color.r
+			  << "' g='" << (int)color.g
+			  << "' b='" << (int)color.b
+			  << "' a='" << (int)color.a << "'/>";
+
+		m_out << std::endl << "</line>" << std::endl;
 	}
 
 	void EndDraw()

@@ -13,6 +13,15 @@ public:
 	{
 	}
 
+	void SetColor(uint32_t rgbColor) override
+	{
+		auto blue = float((rgbColor >> 16) & 0xFF);
+		auto green = float((rgbColor >> 8) & 0xFF);
+		auto red = float(rgbColor & 0xFF);
+
+		m_color = {blue, green, red, 1};
+	}
+
 	void MoveTo(int x, int y) override
 	{
 		m_startPoint = {x, y};
@@ -21,7 +30,7 @@ public:
 	void LineTo(int x, int y) override
 	{
 		modern_graphics_lib::CPoint m_endPoint = {x, y};
-		m_modernGraphicsRenderer.DrawLine(m_startPoint, m_endPoint);
+		m_modernGraphicsRenderer.DrawLine(m_startPoint, m_endPoint, m_color);
 
 		m_startPoint = m_endPoint;
 	}
@@ -29,14 +38,15 @@ public:
 private:
 	modern_graphics_lib::CModernGraphicsRenderer& m_modernGraphicsRenderer;
 	modern_graphics_lib::CPoint m_startPoint = {0, 0};
+	modern_graphics_lib::CRGBAColor m_color = {0, 0, 0, 0};
 };
 
 void PaintPicture(shape_drawing_lib::CCanvasPainter& painter)
 {
-	shape_drawing_lib::CRectangle rectangle({100, 50}, 50, 50);
+	shape_drawing_lib::CRectangle rectangle({100, 50}, 50, 50, 123245);
 	painter.Draw(rectangle);
 
-	shape_drawing_lib::CTriangle triangle({100, 50}, {125, 100}, {150, 50});
+	shape_drawing_lib::CTriangle triangle({100, 50}, {125, 100}, {150, 50}, 1254865);
 	painter.Draw(triangle);
 }
 
