@@ -1,5 +1,6 @@
 #pragma once
 #include "../../../Common/Color/Color.h"
+#include <functional>
 
 class IStyle
 {
@@ -15,5 +16,6 @@ public:
 	virtual void SetColor(Color color) = 0;
 
 	virtual ~IStyle() = default;
-
 };
+
+typedef std::function<void(IStyle&)> StyleEnumerator;
