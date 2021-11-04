@@ -47,7 +47,29 @@ void CCanvas::FillPolygon(const std::vector<PointD>& points, Color fillColor)
 	m_renderTarget.draw(shape);
 }
 
-void CCanvas::DrawEllipse(PointD center, double widthRadius, double heightRadius, Color fillColor, Color borderColor, double thickness)
+void CCanvas::DrawEllipse(PointD center, double widthRadius, double heightRadius, Color borderColor, double thickness)
+{
+	DrawEllipseWithColor(
+		center,
+		widthRadius,
+		heightRadius,
+		sf::Color(0, 0, 0, 0),
+		sf::Color(borderColor),
+		thickness);
+}
+
+void CCanvas::FillEllipse(PointD center, double widthRadius, double heightRadius, Color fillColor)
+{
+	DrawEllipseWithColor(
+		center,
+		widthRadius,
+		heightRadius,
+		sf::Color(fillColor),
+		sf::Color(0, 0, 0, 0),
+		0);
+}
+
+void CCanvas::DrawEllipseWithColor(PointD center, double widthRadius, double heightRadius, sf::Color fillColor, sf::Color borderColor, double thickness)
 {
 	sf::CircleShape circleShape((float)widthRadius);
 
@@ -55,9 +77,9 @@ void CCanvas::DrawEllipse(PointD center, double widthRadius, double heightRadius
 	circleShape.move(sf::Vector2f((float)center.x, (float)m_renderTarget.getSize().y - (float)center.y));
 	circleShape.setScale(1.f, float(heightRadius) / float(widthRadius));
 
-	circleShape.setOutlineColor(sf::Color(borderColor));
+	circleShape.setOutlineColor(borderColor);
 	circleShape.setOutlineThickness((float)thickness);
-	circleShape.setFillColor(sf::Color(fillColor));
+	circleShape.setFillColor(fillColor);
 
 	m_renderTarget.draw(circleShape);
 }

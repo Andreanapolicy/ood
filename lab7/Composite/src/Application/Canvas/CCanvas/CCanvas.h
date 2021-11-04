@@ -12,8 +12,12 @@ public:
 
 	void FillPolygon(const std::vector<PointD>& points, Color fillColor) override;
 
-	void DrawEllipse(PointD center, double widthRadius, double heightRadius, Color fillColor, Color borderColor, double thickness) override;
+	void DrawEllipse(PointD center, double widthRadius, double heightRadius, Color borderColor, double thickness) override;
+
+	void FillEllipse(PointD center, double widthRadius, double heightRadius, Color fillColor) override;
 
 private:
+
+	void DrawEllipseWithColor(PointD center, double widthRadius, double heightRadius, sf::Color fillColor, sf::Color borderColor, double thickness);
 	sf::RenderTarget& m_renderTarget;
 };

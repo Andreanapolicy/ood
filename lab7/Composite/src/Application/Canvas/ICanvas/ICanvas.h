@@ -10,7 +10,9 @@ public:
 
 	virtual void FillPolygon(const std::vector<PointD>& points, Color fillColor) = 0;
 
-	virtual void DrawEllipse(PointD center, double widthRadius, double heightRadius, Color fillColor = 0, Color borderColor = 0, double thickness = 0) = 0;
+	virtual void DrawEllipse(PointD center, double widthRadius, double heightRadius, Color borderColor, double thickness) = 0;
+
+	virtual void FillEllipse(PointD center, double widthRadius, double heightRadius, Color fillColor) = 0;
 
 	virtual ~ICanvas() = default;
 };
