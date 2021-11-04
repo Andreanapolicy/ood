@@ -13,9 +13,9 @@ public:
 
 	virtual void SetFrame(FrameD& frame) = 0;
 
-	virtual std::shared_ptr<IStyle> GetLineStyle() = 0;
+	virtual std::shared_ptr<IBorderStyle> GetLineStyle() = 0;
 
-	virtual std::shared_ptr<const IStyle> GetLineStyle() const = 0;
+	virtual std::shared_ptr<const IBorderStyle> GetLineStyle() const = 0;
 
 	virtual std::shared_ptr<IStyle> GetFillStyle() = 0;
 

@@ -9,9 +9,9 @@ class CShape : public IShape
 public:
 	CShape();
 
-	std::shared_ptr<IStyle> GetLineStyle() override;
+	std::shared_ptr<IBorderStyle> GetLineStyle() override;
 
-	std::shared_ptr<const IStyle> GetLineStyle() const override;
+	std::shared_ptr<const IBorderStyle> GetLineStyle() const override;
 
 	std::shared_ptr<IStyle> GetFillStyle() override;
 
@@ -20,7 +20,7 @@ public:
 	std::shared_ptr<IGroup> GetGroup() const override;
 
 protected:
-	void Draw() const = 0;
+	void Draw(ICanvas& canvas) const = 0;
 
 	virtual FrameD GetFrame() const = 0;
 

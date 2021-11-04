@@ -6,12 +6,12 @@ CShape::CShape()
 {
 }
 
-std::shared_ptr<IStyle> CShape::GetLineStyle()
+std::shared_ptr<IBorderStyle> CShape::GetLineStyle()
 {
 	return m_borderStyle;
 }
 
-std::shared_ptr<const IStyle> CShape::GetLineStyle() const
+std::shared_ptr<const IBorderStyle> CShape::GetLineStyle() const
 {
 	return m_borderStyle;
 }
