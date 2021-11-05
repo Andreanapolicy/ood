@@ -21,7 +21,9 @@ public:
 
 	virtual std::shared_ptr<const IStyle> GetFillStyle() const = 0;
 
-	virtual std::shared_ptr<IGroup> GetGroup() const = 0;
+	virtual std::shared_ptr<const IGroup> GetGroup() const = 0;
+
+	virtual std::shared_ptr<IGroup> GetGroup() = 0;
 
 	~IShape() = default;
 };

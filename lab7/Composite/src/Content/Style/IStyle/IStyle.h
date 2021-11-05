@@ -1,6 +1,7 @@
 #pragma once
 #include "../../../Common/Color/Color.h"
 #include <functional>
+#include <iostream>
 
 class IStyle
 {

@@ -26,11 +26,12 @@ std::shared_ptr<IStyle> CShape::GetFillStyle()
 	return m_fillStyle;
 }
 
-std::shared_ptr<IGroup> CShape::GetGroup() const
+std::shared_ptr<const IGroup> CShape::GetGroup() const
 {
 	return nullptr;
 }
 
-void CShape::Draw() const
+std::shared_ptr<IGroup> CShape::GetGroup()
 {
+	return nullptr;
 }

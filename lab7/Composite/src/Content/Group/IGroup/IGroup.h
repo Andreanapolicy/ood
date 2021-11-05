@@ -1,11 +1,10 @@
 #pragma once
 #include "../../Shape/IShape/IShape.h"
-#include <memory>
 
 class IGroup : public IShape
 {
 public:
-	virtual int GetShapesCount() const = 0;
+	virtual size_t GetShapesCount() const = 0;
 
 	virtual std::shared_ptr<IShape> GetShapeAtIndex(const size_t index) = 0;
 
