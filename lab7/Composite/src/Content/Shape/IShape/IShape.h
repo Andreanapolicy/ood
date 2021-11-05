@@ -1,5 +1,6 @@
 #pragma once
 #include "../../Style/IStyle/IStyle.h"
+#include "../../Style/IBorderStyle/IBorderStyle.h"
 #include "../IDrawable/IDrawable.h"
 #include "../../../Common/Frame/Frame.h"
 #include <memory>
