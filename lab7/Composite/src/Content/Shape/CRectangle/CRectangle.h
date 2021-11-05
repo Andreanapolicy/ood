@@ -3,7 +3,7 @@
 
 class CRectangle : public CShape
 {
-protected:
+public:
 	CRectangle(PointD point, double width, double height);
 
 	void Draw(ICanvas& canvas) const override;

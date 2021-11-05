@@ -28,7 +28,7 @@ double CBorderGroupStyle::GetThickness() const
 
 		if (thickness != style.GetThickness())
 		{
-			isRepeatedly = false;
+			thickness = 0;
 		}
 	};
 
@@ -51,7 +51,7 @@ bool CBorderGroupStyle::isEnable() const
 
 		if (isEnable != style.isEnable())
 		{
-			isRepeatedly = false;
+			isEnable = false;
 		}
 	};
 
@@ -80,7 +80,7 @@ void CBorderGroupStyle::Disable()
 
 Color CBorderGroupStyle::GetColor() const
 {
-	uint32_t color = 0;
+	uint32_t color = 0x00000000;
 	bool isRepeatedly = false;
 
 	BorderStyleEnumerator styleEnumerator = [&](IBorderStyle& style) {
@@ -92,7 +92,7 @@ Color CBorderGroupStyle::GetColor() const
 
 		if (color != style.GetColor())
 		{
-			isRepeatedly = false;
+			color = 0x00000000;
 		}
 	};
 

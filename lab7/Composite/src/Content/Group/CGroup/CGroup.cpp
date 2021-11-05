@@ -36,14 +36,14 @@ std::shared_ptr<IShape> CGroup::GetShapeAtIndex(const size_t index)
 	return m_shapes.at(index);
 }
 
-void CGroup::InsertShape(std::shared_ptr<IShape>& shape, const size_t index)
+void CGroup::InsertShape(std::shared_ptr<IShape> shape, const size_t index)
 {
 	if (shape == nullptr)
 	{
 		throw CEmptyShapeException("Error, shape pointer is nullptr");
 	}
 
-	if (index >= GetShapesCount() || index < 0)
+	if (index > GetShapesCount() || index < 0)
 	{
 		throw CWrongShapeIndexException("Error, wrong index to insert shape");
 	}

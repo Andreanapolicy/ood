@@ -19,7 +19,7 @@ bool CFillGroupStyle::isEnable() const
 
 		if (isEnable != style.isEnable())
 		{
-			isRepeatedly = false;
+			isEnable = false;
 		}
 	};
 
@@ -48,7 +48,7 @@ void CFillGroupStyle::Disable()
 
 Color CFillGroupStyle::GetColor() const
 {
-	uint32_t color = 0;
+	uint32_t color = 0x00000000;
 	bool isRepeatedly = false;
 
 	StyleEnumerator styleEnumerator = [&](IStyle& style) {
@@ -60,7 +60,7 @@ Color CFillGroupStyle::GetColor() const
 
 		if (color != style.GetColor())
 		{
-			isRepeatedly = false;
+			color = 0x00000000;
 		}
 	};
 

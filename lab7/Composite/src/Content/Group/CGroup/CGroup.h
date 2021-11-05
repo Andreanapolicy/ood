@@ -15,7 +15,7 @@ public:
 
 	size_t GetShapesCount() const override;
 	std::shared_ptr<IShape> GetShapeAtIndex(const size_t index) override;
-	void InsertShape(std::shared_ptr<IShape>& shape, const size_t index) override;
+	void InsertShape(std::shared_ptr<IShape> shape, const size_t index) override;
 	void RemoveShapeAtIndex(const size_t index) override;
 
 	FrameD GetFrame() const override;

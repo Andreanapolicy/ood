@@ -32,7 +32,7 @@ void CEllipse::Draw(ICanvas& canvas) const
 FrameD CEllipse::GetFrame() const
 {
 	return FrameD(
-		{ m_center.x - m_widthRadius, m_center.x - m_heightRadius,
+		{ m_center.x - m_widthRadius, m_center.y - m_heightRadius,
 			m_widthRadius * 2,
 			m_heightRadius * 2 });
 }
