@@ -15,9 +15,9 @@ public:
 
 	void SetColor(uint32_t rgbColor) override
 	{
-		auto blue = float((rgbColor >> 16) & 0xFF);
-		auto green = float((rgbColor >> 8) & 0xFF);
-		auto red = float(rgbColor & 0xFF);
+		auto blue = float((rgbColor >> 16) & 0xFF) / 255;
+		auto green = float((rgbColor >> 8) & 0xFF) / 255;
+		auto red = float(rgbColor & 0xFF) / 255;
 
 		m_color = {blue, green, red, 1};
 	}

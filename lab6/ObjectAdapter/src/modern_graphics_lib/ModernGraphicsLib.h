@@ -33,7 +33,7 @@ public:
 class CModernGraphicsRenderer
 {
 public:
-	CModernGraphicsRenderer(std::ostream& strm)
+	explicit CModernGraphicsRenderer(std::ostream& strm)
 		: m_out(strm)
 	{
 	}

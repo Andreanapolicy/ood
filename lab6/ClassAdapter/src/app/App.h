@@ -8,7 +8,7 @@ namespace app
 class CModernGraphicsLibAdapter : public graphics_lib::ICanvas, public modern_graphics_lib::CModernGraphicsRenderer
 {
 public:
-	CModernGraphicsLibAdapter(std::ostream& strm)
+	explicit CModernGraphicsLibAdapter(std::ostream& strm)
 		: modern_graphics_lib::CModernGraphicsRenderer(strm)
 	{
 	}
