@@ -62,9 +62,11 @@ void PaintPictureOnModernGraphicsRenderer()
 {
 	modern_graphics_lib::CModernGraphicsRenderer renderer(std::cout);
 
+	renderer.BeginDraw();
 	CModernGraphicsLibAdapter canvas(renderer);
 	shape_drawing_lib::CCanvasPainter canvasPainter(canvas);
 
 	PaintPicture(canvasPainter);
+	renderer.EndDraw();
 }
 }

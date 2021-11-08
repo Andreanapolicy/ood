@@ -1,4 +1,5 @@
 #pragma once
+#include <iomanip>
 #include <iostream>
 
 namespace graphics_lib
@@ -20,7 +21,7 @@ class CCanvas : public ICanvas
 public:
 	void SetColor(uint32_t rgbColor) override
 	{
-		std::cout << "SetColor (#" << std::hex << std::setw(rgbColor) << ")" << std::endl;
+		std::cout << "SetColor (#" << std::setw(6) << std::hex << rgbColor << ")" << std::endl;
 	}
 
 	void MoveTo(int x, int y) override
