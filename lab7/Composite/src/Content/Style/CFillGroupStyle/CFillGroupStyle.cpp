@@ -48,7 +48,7 @@ void CFillGroupStyle::Disable()
 
 Color CFillGroupStyle::GetColor() const
 {
-	uint32_t color = 0x00000000;
+	Color color = 0x00000000;
 	bool isRepeatedly = false;
 
 	StyleEnumerator styleEnumerator = [&](IStyle& style) {

@@ -80,7 +80,7 @@ void CBorderGroupStyle::Disable()
 
 Color CBorderGroupStyle::GetColor() const
 {
-	uint32_t color = 0x00000000;
+	Color color = 0x00000000;
 	bool isRepeatedly = false;
 
 	BorderStyleEnumerator styleEnumerator = [&](IBorderStyle& style) {
