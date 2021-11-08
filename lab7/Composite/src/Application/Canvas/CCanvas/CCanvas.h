@@ -6,7 +6,7 @@
 class CCanvas : public ICanvas
 {
 public:
-	CCanvas(sf::RenderTarget& renderTarget);
+	explicit CCanvas(sf::RenderTarget& renderTarget);
 
 	void DrawLine(PointD from, PointD to, Color borderColor, double thickness) override;
 

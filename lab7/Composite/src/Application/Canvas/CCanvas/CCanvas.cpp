@@ -9,19 +9,19 @@ void CCanvas::DrawLine(PointD from, PointD to, Color borderColor, double thickne
 {
 	sf::Vertex vertices[4];
 
-	sf::Vector2f fromPoint((float)from.x, (float)from.y);
-	sf::Vector2f toPoint((float)from.x, (float)from.y);
+	sf::Vector2f fromVector((float)from.x, (float)from.y);
+	sf::Vector2f toVector((float)from.x, (float)from.y);
 
-	sf::Vector2f direction = fromPoint - toPoint;
+	sf::Vector2f direction = fromVector - toVector;
 	sf::Vector2f unitDirection = direction / std::sqrt(direction.x * direction.x + direction.y * direction.y);
 	sf::Vector2f unitPerpendicular(-unitDirection.y, unitDirection.x);
 
 	sf::Vector2f offset = (float)(thickness / 2.f) * unitPerpendicular;
 
-	vertices[0].position = fromPoint + offset;
-	vertices[1].position = toPoint + offset;
-	vertices[2].position = toPoint - offset;
-	vertices[3].position = fromPoint - offset;
+	vertices[0].position = fromVector + offset;
+	vertices[1].position = toVector + offset;
+	vertices[2].position = toVector - offset;
+	vertices[3].position = fromVector - offset;
 
 	for (auto& vertex : vertices)
 	{
@@ -75,7 +75,7 @@ void CCanvas::DrawEllipseWithColor(PointD center, double widthRadius, double hei
 
 	circleShape.setOrigin((float)widthRadius, (float)widthRadius);
 	circleShape.move(sf::Vector2f((float)center.x, (float)m_renderTarget.getSize().y - (float)center.y));
-	circleShape.setScale(1.f, float(heightRadius) / float(widthRadius));
+	circleShape.setScale(1.f, (float)heightRadius / (float)widthRadius);
 
 	circleShape.setOutlineColor(borderColor);
 	circleShape.setOutlineThickness((float)thickness);

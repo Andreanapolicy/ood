@@ -48,7 +48,7 @@ void CSlide::RemoveShapeAtIndex(const size_t index)
 
 void CSlide::Draw(ICanvas& canvas) const
 {
-	for (auto& shape : m_shapes)
+	for (const auto& shape : m_shapes)
 	{
 		shape->Draw(canvas);
 	}

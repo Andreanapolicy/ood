@@ -42,7 +42,7 @@ void CTriangle::SetFrame(FrameD& frame)
 	auto m_coefX = frame.width / currentFrame.width;
 	auto m_coefY = frame.height / currentFrame.height;
 
-	for (auto& point : points)
+	for (const auto& point : points)
 	{
 		*point = {
 			frame.leftTopPoint.x + (point->x - currentFrame.leftTopPoint.x) * m_coefX,

@@ -3,7 +3,7 @@
 CGroup::CGroup()
 {
 	BorderGroupEnumerator borderGroupEnumerator = [&](BorderStyleEnumerator styleEnumerator) {
-		for (auto& shape : m_shapes)
+		for (const auto& shape : m_shapes)
 		{
 			styleEnumerator(*shape->GetLineStyle());
 		}
@@ -12,7 +12,7 @@ CGroup::CGroup()
 	m_borderStyle = std::make_shared<CBorderGroupStyle>(borderGroupEnumerator);
 
 	FillGroupEnumerator fillGroupEnumerator = [&](StyleEnumerator styleEnumerator) {
-		for (auto& shape : m_shapes)
+		for (const auto& shape : m_shapes)
 		{
 			styleEnumerator(*shape->GetFillStyle());
 		}
@@ -81,7 +81,7 @@ FrameD CGroup::GetFrame() const
 	double maxY = std::numeric_limits<double>::min();
 	double minY = std::numeric_limits<double>::max();
 
-	for (auto& shape : m_shapes)
+	for (const auto& shape : m_shapes)
 	{
 		auto frame = shape->GetFrame();
 
@@ -106,7 +106,7 @@ void CGroup::SetFrame(FrameD& frame)
 	auto coefX = frame.width / currentFrame.width;
 	auto coefY = frame.height / currentFrame.height;
 
-	for (auto& shape : m_shapes)
+	for (const auto& shape : m_shapes)
 	{
 		auto shapeFrame = shape->GetFrame();
 

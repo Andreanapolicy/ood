@@ -4,6 +4,4 @@
 
 class IGroup : public IShape, public IComposite
 {
-public:
-
 };
