@@ -50,8 +50,10 @@ void PaintPictureOnCanvas()
 void PaintPictureOnModernGraphicsRenderer()
 {
 	CModernGraphicsLibAdapter canvas(std::cout);
+	canvas.BeginDraw();
 	shape_drawing_lib::CCanvasPainter canvasPainter(canvas);
 
 	PaintPicture(canvasPainter);
+	canvas.EndDraw();
 }
 }
