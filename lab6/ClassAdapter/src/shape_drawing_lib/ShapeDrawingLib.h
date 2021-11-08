@@ -70,7 +70,7 @@ private:
 class CCanvasPainter
 {
 public:
-	CCanvasPainter(graphics_lib::ICanvas& canvas)
+	explicit CCanvasPainter(graphics_lib::ICanvas& canvas)
 		: m_canvas(canvas)
 	{
 	}
