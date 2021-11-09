@@ -69,11 +69,11 @@ void CGroup::Draw(ICanvas& canvas) const
 	}
 }
 
-FrameD CGroup::GetFrame() const
+std::optional<FrameD> CGroup::GetFrame() const
 {
 	if (m_shapes.empty())
 	{
-		return FrameD();
+		return std::nullopt;
 	}
 
 	double maxX = std::numeric_limits<double>::min();
@@ -83,7 +83,7 @@ FrameD CGroup::GetFrame() const
 
 	for (const auto& shape : m_shapes)
 	{
-		auto frame = shape->GetFrame();
+		auto frame = shape->GetFrame().value();
 
 		maxX = std::max(maxX, frame.leftTopPoint.x + frame.width);
 		minX = std::min(minX, frame.leftTopPoint.x);
@@ -96,7 +96,7 @@ FrameD CGroup::GetFrame() const
 
 void CGroup::SetFrame(FrameD& frame)
 {
-	auto currentFrame = GetFrame();
+	auto currentFrame = GetFrame().value();
 
 	if (IsFrameEmpty(currentFrame))
 	{
@@ -108,7 +108,7 @@ void CGroup::SetFrame(FrameD& frame)
 
 	for (const auto& shape : m_shapes)
 	{
-		auto shapeFrame = shape->GetFrame();
+		auto shapeFrame = shape->GetFrame().value();
 
 		auto leftPointX = frame.leftTopPoint.x + (shapeFrame.leftTopPoint.x - currentFrame.leftTopPoint.x) * coefX;
 		auto leftPointY = frame.leftTopPoint.y + (shapeFrame.leftTopPoint.y - currentFrame.leftTopPoint.y) * coefY;

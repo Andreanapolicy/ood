@@ -4,13 +4,14 @@
 #include "../IDrawable/IDrawable.h"
 #include "../../../Common/Frame/Frame.h"
 #include <memory>
+#include <optional>
 
 class IGroup;
 
 class IShape : public IDrawable
 {
 public:
-	virtual FrameD GetFrame() const = 0;
+	virtual std::optional<FrameD> GetFrame() const = 0;
 
 	virtual void SetFrame(FrameD& frame) = 0;
 

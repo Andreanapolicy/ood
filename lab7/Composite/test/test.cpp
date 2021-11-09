@@ -69,7 +69,7 @@ TEST_CASE("check adding items")
 			{
 				REQUIRE(group.GetShapesCount() == 1);
 
-				auto shape = group.GetShapeAtIndex(0)->GetFrame();
+				auto shape = group.GetShapeAtIndex(0)->GetFrame().value();
 
 				REQUIRE(shape.width == 10);
 				REQUIRE(shape.height == 20);
@@ -87,7 +87,7 @@ TEST_CASE("check adding items")
 
 			REQUIRE(group.GetShapesCount() == 2);
 
-			auto shape = group.GetShapeAtIndex(0)->GetFrame();
+			auto shape = group.GetShapeAtIndex(0)->GetFrame().value();
 
 			REQUIRE(shape.width == 20);
 			REQUIRE(shape.height == 40);
@@ -115,7 +115,7 @@ TEST_CASE("check deleting items")
 				group.RemoveShapeAtIndex(group.GetShapesCount() - 1);
 				REQUIRE(group.GetShapesCount() == 1);
 
-				auto shape = group.GetShapeAtIndex(0)->GetFrame();
+				auto shape = group.GetShapeAtIndex(0)->GetFrame().value();
 
 				REQUIRE(shape.width == 10);
 				REQUIRE(shape.height == 20);
@@ -136,7 +136,7 @@ TEST_CASE("check deleting items")
 				group.RemoveShapeAtIndex(0);
 				REQUIRE(group.GetShapesCount() == 1);
 
-				auto shape = group.GetShapeAtIndex(0)->GetFrame();
+				auto shape = group.GetShapeAtIndex(0)->GetFrame().value();
 
 				REQUIRE(shape.width == 110);
 				REQUIRE(shape.height == 120);
@@ -160,7 +160,7 @@ TEST_CASE("check deleting items")
 				group.RemoveShapeAtIndex(1);
 				REQUIRE(group.GetShapesCount() == 2);
 
-				auto shape = group.GetShapeAtIndex(1)->GetFrame();
+				auto shape = group.GetShapeAtIndex(1)->GetFrame().value();
 
 				REQUIRE(shape.width == 200);
 				REQUIRE(shape.height == 210);
@@ -197,11 +197,11 @@ TEST_CASE("add styles")
 		{
 			THEN("params will be default values")
 			{
-				REQUIRE(group.GetFillStyle()->GetColor() == 0x00000000);
+				REQUIRE(group.GetFillStyle()->GetColor() == std::nullopt);
 				REQUIRE(group.GetFillStyle()->isEnable() == false);
 				REQUIRE(group.GetLineStyle()->isEnable() == false);
-				REQUIRE(group.GetLineStyle()->GetColor() == 0x00000000);
-				REQUIRE(group.GetLineStyle()->GetThickness() == 0);
+				REQUIRE(group.GetLineStyle()->GetColor() == std::nullopt);
+				REQUIRE(group.GetLineStyle()->GetThickness() == std::nullopt);
 			}
 		}
 
@@ -216,22 +216,22 @@ TEST_CASE("add styles")
 
 			THEN("group params will be the same")
 			{
-				REQUIRE(group.GetFillStyle()->GetColor() == 0x654321FF);
+				REQUIRE(group.GetFillStyle()->GetColor().value() == 0x654321FF);
 				REQUIRE(group.GetFillStyle()->isEnable() == true);
 				REQUIRE(group.GetLineStyle()->isEnable() == true);
-				REQUIRE(group.GetLineStyle()->GetColor() == 0x123456FF);
-				REQUIRE(group.GetLineStyle()->GetThickness() == 2);
+				REQUIRE(group.GetLineStyle()->GetColor().value() == 0x123456FF);
+				REQUIRE(group.GetLineStyle()->GetThickness().value() == 2);
 			}
 
 			THEN("shapes params will be the same")
 			{
 				auto shape = group.GetShapeAtIndex(1);
 
-				REQUIRE(shape->GetFillStyle()->GetColor() == 0x654321FF);
+				REQUIRE(shape->GetFillStyle()->GetColor().value() == 0x654321FF);
 				REQUIRE(shape->GetFillStyle()->isEnable() == true);
 				REQUIRE(shape->GetLineStyle()->isEnable() == true);
-				REQUIRE(shape->GetLineStyle()->GetColor() == 0x123456FF);
-				REQUIRE(shape->GetLineStyle()->GetThickness() == 2);
+				REQUIRE(shape->GetLineStyle()->GetColor().value() == 0x123456FF);
+				REQUIRE(shape->GetLineStyle()->GetThickness().value() == 2);
 			}
 		}
 	}
@@ -250,7 +250,7 @@ TEST_CASE("test group frame")
 
 		WHEN("get frame of group")
 		{
-			auto frame = group.GetFrame();
+			auto frame = group.GetFrame().value();
 
 			THEN("frame will be right")
 			{
@@ -265,7 +265,7 @@ TEST_CASE("test group frame")
 		{
 			auto newFrame = FrameD{PointD{3, 2}, 10, 16};
 			group.SetFrame(newFrame);
-			auto frame = group.GetFrame();
+			auto frame = group.GetFrame().value();
 
 			THEN("frame will be right")
 			{
@@ -277,7 +277,7 @@ TEST_CASE("test group frame")
 
 			THEN("rectangle frame will be right")
 			{
-				auto shapesFrame = group.GetShapeAtIndex(0)->GetFrame();
+				auto shapesFrame = group.GetShapeAtIndex(0)->GetFrame().value();
 
 				REQUIRE(shapesFrame.leftTopPoint.x == 3);
 				REQUIRE(shapesFrame.leftTopPoint.y == 2);
@@ -287,12 +287,35 @@ TEST_CASE("test group frame")
 
 			THEN("ellipse frame will be right")
 			{
-				auto shapesFrame = group.GetShapeAtIndex(1)->GetFrame();
+				auto shapesFrame = group.GetShapeAtIndex(1)->GetFrame().value();
 
 				REQUIRE(shapesFrame.leftTopPoint.x == 5);
 				REQUIRE(shapesFrame.leftTopPoint.y == 2);
 				REQUIRE(shapesFrame.width == 8);
 				REQUIRE(shapesFrame.height == 16);
+			}
+		}
+	}
+
+	GIVEN("empty group and figure")
+	{
+		auto emptyGroup = std::make_shared<CGroup>();
+		auto emptyEllipse = std::make_shared<CEllipse>(CEllipse({12, 12}, 0, 0));
+		emptyGroup->InsertShape(emptyEllipse, 0);
+		auto rectangle = std::make_shared<CRectangle>(CRectangle({12, 12}, 12, 12));
+
+		group.InsertShape(emptyGroup, 0);
+		group.InsertShape(rectangle, 0);
+
+		WHEN("get frame of global group")
+		{
+			THEN("frame will be the same with rectangle")
+			{
+				auto frame = group.GetFrame().value();
+				REQUIRE(frame.leftTopPoint.x == 12);
+				REQUIRE(frame.leftTopPoint.y == 12);
+				REQUIRE(frame.width == 12);
+				REQUIRE(frame.height == 12);
 			}
 		}
 	}

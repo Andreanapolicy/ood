@@ -15,8 +15,8 @@ void CEllipse::Draw(ICanvas& canvas) const
 			m_center,
 			m_widthRadius,
 			m_heightRadius,
-			GetLineStyle()->GetColor(),
-			GetLineStyle()->GetThickness());
+			GetLineStyle()->GetColor().value(),
+			GetLineStyle()->GetThickness().value());
 	}
 
 	if (GetFillStyle()->isEnable())
@@ -25,11 +25,11 @@ void CEllipse::Draw(ICanvas& canvas) const
 			m_center,
 			m_widthRadius,
 			m_heightRadius,
-			GetFillStyle()->GetColor());
+			GetFillStyle()->GetColor().value());
 	}
 }
 
-FrameD CEllipse::GetFrame() const
+std::optional<FrameD> CEllipse::GetFrame() const
 {
 	return FrameD(
 		{ m_center.x - m_widthRadius, m_center.y - m_heightRadius,

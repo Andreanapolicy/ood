@@ -11,20 +11,20 @@ void CTriangle::Draw(ICanvas& canvas) const
 {
 	if (GetLineStyle()->isEnable())
 	{
-		canvas.DrawLine(m_firstVertex, m_secondVertex, GetLineStyle()->GetColor(), GetLineStyle()->GetThickness());
-		canvas.DrawLine(m_secondVertex, m_thirdVertex, GetLineStyle()->GetColor(), GetLineStyle()->GetThickness());
-		canvas.DrawLine(m_thirdVertex, m_firstVertex, GetLineStyle()->GetColor(), GetLineStyle()->GetThickness());
+		canvas.DrawLine(m_firstVertex, m_secondVertex, GetLineStyle()->GetColor().value(), GetLineStyle()->GetThickness().value());
+		canvas.DrawLine(m_secondVertex, m_thirdVertex, GetLineStyle()->GetColor().value(), GetLineStyle()->GetThickness().value());
+		canvas.DrawLine(m_thirdVertex, m_firstVertex, GetLineStyle()->GetColor().value(), GetLineStyle()->GetThickness().value());
 	}
 
 	std::vector<PointD> points = {m_firstVertex, m_secondVertex, m_thirdVertex};
 
 	if (GetFillStyle()->isEnable())
 	{
-		canvas.FillPolygon(points, GetFillStyle()->GetColor());
+		canvas.FillPolygon(points, GetFillStyle()->GetColor().value());
 	}
 }
 
-FrameD CTriangle::GetFrame() const
+std::optional<FrameD> CTriangle::GetFrame() const
 {
 	auto maxX = std::max({ m_firstVertex.x, m_secondVertex.x, m_thirdVertex.x });
 	auto minX = std::min({ m_firstVertex.x, m_secondVertex.x, m_thirdVertex.x });
@@ -38,7 +38,7 @@ void CTriangle::SetFrame(FrameD& frame)
 {
 	std::vector<PointD*> points = {&m_firstVertex, &m_secondVertex, &m_thirdVertex};
 
-	auto currentFrame = GetFrame();
+	auto currentFrame = GetFrame().value();
 	auto m_coefX = frame.width / currentFrame.width;
 	auto m_coefY = frame.height / currentFrame.height;
 

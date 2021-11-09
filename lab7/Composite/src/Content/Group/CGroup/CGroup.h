@@ -18,7 +18,7 @@ public:
 	void InsertShape(std::shared_ptr<IShape> shape, const size_t index) override;
 	void RemoveShapeAtIndex(const size_t index) override;
 
-	FrameD GetFrame() const override;
+	std::optional<FrameD> GetFrame() const override;
 	void SetFrame(FrameD& frame) override;
 
 	std::shared_ptr<IBorderStyle> GetLineStyle() override;

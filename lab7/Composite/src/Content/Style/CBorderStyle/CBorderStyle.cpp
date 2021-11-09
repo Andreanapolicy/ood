@@ -12,7 +12,7 @@ void CBorderStyle::SetThickness(double thickness)
 	m_thickness = thickness;
 }
 
-double CBorderStyle::GetThickness() const
+std::optional<double> CBorderStyle::GetThickness() const
 {
 	return m_thickness;
 }
@@ -32,7 +32,7 @@ void CBorderStyle::Disable()
 	m_enable = false;
 }
 
-Color CBorderStyle::GetColor() const
+std::optional<Color> CBorderStyle::GetColor() const
 {
 	return m_color;
 }

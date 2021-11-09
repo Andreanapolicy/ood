@@ -12,7 +12,7 @@ public:
 
 	void Disable() override;
 
-	Color GetColor() const override;
+	std::optional<Color> GetColor() const override;
 
 	void SetColor(Color color) override;
 

@@ -21,7 +21,7 @@ void CFillStyle::Disable()
 	m_enable = false;
 }
 
-Color CFillStyle::GetColor() const
+std::optional<Color> CFillStyle::GetColor() const
 {
 	return m_color;
 }

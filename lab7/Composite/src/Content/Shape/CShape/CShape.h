@@ -23,7 +23,7 @@ public:
 protected:
 	void Draw(ICanvas& canvas) const = 0;
 
-	virtual FrameD GetFrame() const = 0;
+	virtual std::optional<FrameD> GetFrame() const = 0;
 
 	virtual void SetFrame(FrameD& frame) = 0;
 

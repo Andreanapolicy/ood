@@ -12,7 +12,7 @@ public:
 
 	virtual void Disable() = 0;
 
-	virtual Color GetColor() const = 0;
+	virtual std::optional<Color> GetColor() const = 0;
 
 	virtual void SetColor(Color color) = 0;
 

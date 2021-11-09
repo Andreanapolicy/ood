@@ -14,9 +14,9 @@ void CBorderGroupStyle::SetThickness(double thickness)
 	m_enumerator(styleEnumerator);
 }
 
-double CBorderGroupStyle::GetThickness() const
+std::optional<double> CBorderGroupStyle::GetThickness() const
 {
-	double thickness = 0;
+	std::optional<double> thickness = std::nullopt;
 	bool isRepeatedly = false;
 
 	BorderStyleEnumerator styleEnumerator = [&thickness, &isRepeatedly](IBorderStyle& style) {
@@ -28,7 +28,7 @@ double CBorderGroupStyle::GetThickness() const
 
 		if (thickness != style.GetThickness())
 		{
-			thickness = 0;
+			thickness = std::nullopt;
 		}
 	};
 
@@ -78,9 +78,9 @@ void CBorderGroupStyle::Disable()
 	m_enumerator(styleEnumerator);
 }
 
-Color CBorderGroupStyle::GetColor() const
+std::optional<Color> CBorderGroupStyle::GetColor() const
 {
-	Color color = 0x00000000;
+	std::optional<Color> color = std::nullopt;
 	bool isRepeatedly = false;
 
 	BorderStyleEnumerator styleEnumerator = [&color, &isRepeatedly](IBorderStyle& style) {
@@ -92,7 +92,7 @@ Color CBorderGroupStyle::GetColor() const
 
 		if (color != style.GetColor())
 		{
-			color = 0x00000000;
+			color = std::nullopt;
 		}
 	};
 

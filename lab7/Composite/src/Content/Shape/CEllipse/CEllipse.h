@@ -8,7 +8,7 @@ public:
 
 	void Draw(ICanvas& canvas) const override;
 
-	FrameD GetFrame() const override;
+	std::optional<FrameD> GetFrame() const override;
 
 	void SetFrame(FrameD& frame) override;
 

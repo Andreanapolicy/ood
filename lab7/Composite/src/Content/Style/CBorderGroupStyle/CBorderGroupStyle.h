@@ -12,7 +12,7 @@ public:
 
 	void SetThickness(double thickness) override;
 
-	double GetThickness() const override;
+	std::optional<double> GetThickness() const override;
 
 	bool isEnable() const override;
 
@@ -20,7 +20,7 @@ public:
 
 	void Disable() override;
 
-	Color GetColor() const override;
+	std::optional<Color> GetColor() const override;
 
 	void SetColor(Color color) override;
 

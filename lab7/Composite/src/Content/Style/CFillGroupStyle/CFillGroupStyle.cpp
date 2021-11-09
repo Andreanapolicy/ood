@@ -46,9 +46,9 @@ void CFillGroupStyle::Disable()
 	m_enumerator(StyleCallback);
 }
 
-Color CFillGroupStyle::GetColor() const //color|null
+std::optional<Color> CFillGroupStyle::GetColor() const
 {
-	Color color = 0x00000000;
+	std::optional<Color> color = std::nullopt;
 	bool isRepeatedly = false;
 
 	StyleCallback StyleCallback = [&color, &isRepeatedly](IStyle& style) {
@@ -60,7 +60,7 @@ Color CFillGroupStyle::GetColor() const //color|null
 
 		if (color != style.GetColor())
 		{
-			color = 0x00000000;
+			color = std::nullopt;
 		}
 	};
 

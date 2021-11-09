@@ -16,19 +16,19 @@ void CRectangle::Draw(ICanvas& canvas) const
 
 	if (GetLineStyle()->isEnable())
 	{
-		canvas.DrawLine(points[0], points[1], GetLineStyle()->GetColor(), GetLineStyle()->GetThickness());
-		canvas.DrawLine(points[1], points[2], GetLineStyle()->GetColor(), GetLineStyle()->GetThickness());
-		canvas.DrawLine(points[2], points[3], GetLineStyle()->GetColor(), GetLineStyle()->GetThickness());
-		canvas.DrawLine(points[3], points[0], GetLineStyle()->GetColor(), GetLineStyle()->GetThickness());
+		canvas.DrawLine(points[0], points[1], GetLineStyle()->GetColor().value(), GetLineStyle()->GetThickness().value());
+		canvas.DrawLine(points[1], points[2], GetLineStyle()->GetColor().value(), GetLineStyle()->GetThickness().value());
+		canvas.DrawLine(points[2], points[3], GetLineStyle()->GetColor().value(), GetLineStyle()->GetThickness().value());
+		canvas.DrawLine(points[3], points[0], GetLineStyle()->GetColor().value(), GetLineStyle()->GetThickness().value());
 	}
 
-	if (GetFillStyle()->isEnable())
+	if (GetFillStyle()->isEnable() && GetFillStyle()->GetColor() != std::nullopt)
 	{
-		canvas.FillPolygon(points, GetFillStyle()->GetColor());
+		canvas.FillPolygon(points, GetFillStyle()->GetColor().value());
 	}
 }
 
-FrameD CRectangle::GetFrame() const
+std::optional<FrameD> CRectangle::GetFrame() const
 {
 	return m_frame;
 }
