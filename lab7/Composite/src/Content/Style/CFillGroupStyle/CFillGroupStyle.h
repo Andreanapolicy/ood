@@ -1,7 +1,7 @@
 #pragma once
 #include "../IStyle/IStyle.h"
 
-typedef std::function<void(StyleEnumerator)> FillGroupEnumerator;
+typedef std::function<void(StyleCallback)> FillGroupEnumerator;
 
 class CFillGroupStyle : public IStyle
 {

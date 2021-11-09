@@ -176,8 +176,8 @@ int main()
 {
 	auto slide = CreateSlide();
 
-	auto width = unsigned(slide->GetWidth());
-	auto height = unsigned(slide->GetHeight());
+	auto width = (unsigned int) slide->GetWidth();
+	auto height = (unsigned int) slide->GetHeight();
 
 	sf::RenderWindow renderWindow(sf::VideoMode(width, height), "Result");
 	CCanvas canvas(renderWindow);

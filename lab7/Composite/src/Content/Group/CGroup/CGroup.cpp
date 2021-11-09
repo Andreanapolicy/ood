@@ -2,7 +2,7 @@
 
 CGroup::CGroup()
 {
-	BorderGroupEnumerator borderGroupEnumerator = [&](BorderStyleEnumerator styleEnumerator) {
+	BorderGroupEnumerator borderGroupEnumerator = [this](BorderStyleEnumerator styleEnumerator) {
 		for (const auto& shape : m_shapes)
 		{
 			styleEnumerator(*shape->GetLineStyle());
@@ -11,10 +11,10 @@ CGroup::CGroup()
 
 	m_borderStyle = std::make_shared<CBorderGroupStyle>(borderGroupEnumerator);
 
-	FillGroupEnumerator fillGroupEnumerator = [&](StyleEnumerator styleEnumerator) {
+	FillGroupEnumerator fillGroupEnumerator = [this](StyleCallback StyleCallback) {
 		for (const auto& shape : m_shapes)
 		{
-			styleEnumerator(*shape->GetFillStyle());
+			StyleCallback(*shape->GetFillStyle());
 		}
 	};
 
@@ -48,7 +48,7 @@ void CGroup::InsertShape(std::shared_ptr<IShape> shape, const size_t index)
 		throw CWrongShapeIndexException("Error, wrong index to insert shape");
 	}
 
-	m_shapes.emplace(m_shapes.begin() + index, shape);
+	m_shapes.emplace(m_shapes.begin() + index, std::move(shape));
 }
 
 void CGroup::RemoveShapeAtIndex(const size_t index)

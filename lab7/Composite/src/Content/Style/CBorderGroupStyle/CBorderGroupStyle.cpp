@@ -7,7 +7,7 @@ CBorderGroupStyle::CBorderGroupStyle(BorderGroupEnumerator& enumerator)
 
 void CBorderGroupStyle::SetThickness(double thickness)
 {
-	BorderStyleEnumerator styleEnumerator = [&](IBorderStyle& style) {
+	BorderStyleEnumerator styleEnumerator = [thickness](IBorderStyle& style) {
 		style.SetThickness(thickness);
 	};
 
@@ -19,7 +19,7 @@ double CBorderGroupStyle::GetThickness() const
 	double thickness = 0;
 	bool isRepeatedly = false;
 
-	BorderStyleEnumerator styleEnumerator = [&](IBorderStyle& style) {
+	BorderStyleEnumerator styleEnumerator = [&thickness, &isRepeatedly](IBorderStyle& style) {
 		if (!isRepeatedly)
 		{
 			thickness = style.GetThickness();
@@ -42,7 +42,7 @@ bool CBorderGroupStyle::isEnable() const
 	bool isEnable = false;
 	bool isRepeatedly = false;
 
-	BorderStyleEnumerator styleEnumerator = [&](IBorderStyle& style) {
+	BorderStyleEnumerator styleEnumerator = [&isEnable, &isRepeatedly](IBorderStyle& style) {
 		if (!isRepeatedly)
 		{
 			isEnable = style.isEnable();
@@ -62,7 +62,7 @@ bool CBorderGroupStyle::isEnable() const
 
 void CBorderGroupStyle::Enable()
 {
-	BorderStyleEnumerator styleEnumerator = [&](IBorderStyle& style) {
+	BorderStyleEnumerator styleEnumerator = [](IBorderStyle& style) {
 		style.Enable();
 	};
 
@@ -71,7 +71,7 @@ void CBorderGroupStyle::Enable()
 
 void CBorderGroupStyle::Disable()
 {
-	BorderStyleEnumerator styleEnumerator = [&](IBorderStyle& style) {
+	BorderStyleEnumerator styleEnumerator = [](IBorderStyle& style) {
 		style.Disable();
 	};
 
@@ -83,7 +83,7 @@ Color CBorderGroupStyle::GetColor() const
 	Color color = 0x00000000;
 	bool isRepeatedly = false;
 
-	BorderStyleEnumerator styleEnumerator = [&](IBorderStyle& style) {
+	BorderStyleEnumerator styleEnumerator = [&color, &isRepeatedly](IBorderStyle& style) {
 		if (!isRepeatedly)
 		{
 			color = style.GetColor();
@@ -103,7 +103,7 @@ Color CBorderGroupStyle::GetColor() const
 
 void CBorderGroupStyle::SetColor(Color color)
 {
-	BorderStyleEnumerator styleEnumerator = [&](IBorderStyle& style) {
+	BorderStyleEnumerator styleEnumerator = [color](IBorderStyle& style) {
 		style.SetColor(color);
 	};
 

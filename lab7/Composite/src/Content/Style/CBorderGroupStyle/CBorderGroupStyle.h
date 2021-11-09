@@ -1,6 +1,8 @@
 #pragma once
 #include "../IBorderStyle/IBorderStyle.h"
 
+typedef std::function<void(IBorderStyle& style)> BorderStyleEnumerator;
+
 typedef std::function<void(BorderStyleEnumerator)> BorderGroupEnumerator;
 
 class CBorderGroupStyle : public IBorderStyle

@@ -10,7 +10,7 @@ bool CFillGroupStyle::isEnable() const
 	bool isEnable = false;
 	bool isRepeatedly = false;
 
-	StyleEnumerator styleEnumerator = [&](IStyle& style) {
+	StyleCallback StyleCallback = [&isEnable, &isRepeatedly](IStyle& style) {
 		if (!isRepeatedly)
 		{
 			isEnable = style.isEnable();
@@ -23,35 +23,35 @@ bool CFillGroupStyle::isEnable() const
 		}
 	};
 
-	m_enumerator(styleEnumerator);
+	m_enumerator(StyleCallback);
 
 	return isEnable;
 }
 
 void CFillGroupStyle::Enable()
 {
-	StyleEnumerator styleEnumerator = [&](IStyle& style) {
+	StyleCallback StyleCallback = [](IStyle& style) {
 		style.Enable();
 	};
 
-	m_enumerator(styleEnumerator);
+	m_enumerator(StyleCallback);
 }
 
 void CFillGroupStyle::Disable()
 {
-	StyleEnumerator styleEnumerator = [&](IStyle& style) {
+	StyleCallback StyleCallback = [](IStyle& style) {
 		style.Disable();
 	};
 
-	m_enumerator(styleEnumerator);
+	m_enumerator(StyleCallback);
 }
 
-Color CFillGroupStyle::GetColor() const
+Color CFillGroupStyle::GetColor() const //color|null
 {
 	Color color = 0x00000000;
 	bool isRepeatedly = false;
 
-	StyleEnumerator styleEnumerator = [&](IStyle& style) {
+	StyleCallback StyleCallback = [&color, &isRepeatedly](IStyle& style) {
 		if (!isRepeatedly)
 		{
 			color = style.GetColor();
@@ -64,16 +64,16 @@ Color CFillGroupStyle::GetColor() const
 		}
 	};
 
-	m_enumerator(styleEnumerator);
+	m_enumerator(StyleCallback);
 
 	return color;
 }
 
 void CFillGroupStyle::SetColor(Color color)
 {
-	StyleEnumerator styleEnumerator = [&](IStyle& style) {
+	StyleCallback StyleCallback = [color](IStyle& style) {
 		style.SetColor(color);
 	};
 
-	m_enumerator(styleEnumerator);
+	m_enumerator(StyleCallback);
 }

@@ -19,4 +19,4 @@ public:
 	virtual ~IStyle() = default;
 };
 
-typedef std::function<void(IStyle&)> StyleEnumerator;
+typedef std::function<void(IStyle&)> StyleCallback;

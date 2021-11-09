@@ -33,7 +33,7 @@ void CSlide::InsertShape(std::shared_ptr<IShape> shape, const size_t index)
 		throw CWrongShapeIndexException("Error, wrong index to insert shape");
 	}
 
-	m_shapes.emplace(m_shapes.begin() + index, shape);
+	m_shapes.emplace(m_shapes.begin() + index, std::move(shape));
 }
 
 void CSlide::RemoveShapeAtIndex(const size_t index)

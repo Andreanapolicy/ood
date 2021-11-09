@@ -8,5 +8,3 @@ public:
 
 	virtual double GetThickness() const = 0;
 };
-
-typedef std::function<void(IBorderStyle& style)> BorderStyleEnumerator;
