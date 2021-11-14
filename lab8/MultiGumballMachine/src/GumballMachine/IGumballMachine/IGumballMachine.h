@@ -1,6 +1,6 @@
 #pragma once
 
-const int maxQuarterCount = 5;
+constexpr int maxQuarterCount = 5;
 
 class IGumballMachine
 {
