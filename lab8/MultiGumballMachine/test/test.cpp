@@ -1,6 +1,6 @@
 #define CATCH_CONFIG_MAIN
 #include "../../../catch2/catch.hpp"
-#include "../src/GumballMachine/CGamballMachine/CGamballMachine.h"
+#include "../src/GumballMachine/CGumballMachine/CGumballMachine.h"
 
 std::string GetState(unsigned int ballCount, unsigned int quarterCount, const std::string &state)
 {
