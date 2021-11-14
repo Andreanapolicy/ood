@@ -1,5 +1,4 @@
 #pragma once
-
 #include "../../State/CMaxQuarterCountState/CMaxQuarterCountState.h"
 #include "../../State/CHasQuarterState/CHasQuarterState.h"
 #include "../../State/CNoQuarterState/CNoQuarterState.h"
