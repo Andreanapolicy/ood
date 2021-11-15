@@ -32,7 +32,7 @@ public:
 
 		if (m_gumballMachine.GetBallsCount() == 0)
 		{
-			std::cout << "Oops, out of gumballs" << std::endl;
+			std::cout << "Oops, there is no more gumballs in machine" << std::endl;
 			m_gumballMachine.SetSoldOutState();
 
 			return;

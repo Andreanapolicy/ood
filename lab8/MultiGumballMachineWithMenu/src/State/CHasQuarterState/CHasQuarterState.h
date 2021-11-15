@@ -13,6 +13,7 @@ public:
 
 	void InsertQuarter() override
 	{
+		std::cout << "You inserted a quarter" << std::endl;
         m_gumballMachine.AddQuarter();
 
         if (m_gumballMachine.GetQuartersCount() == maxQuarterCount)
